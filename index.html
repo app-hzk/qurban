@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tabungan Qurban v1.0.0 (dev)</title>
+  <title>Tabungan Qurban v1.0.0 (Release)</title>
   
   <meta name="theme-color" content="#1E88E5">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-  <!-- jsPDF untuk fitur cetak laporan -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -60,7 +62,6 @@
 
     .admin-card { background: #2D3748; color: white; }
     .admin-list-item { background: white; padding: 14px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 12px; }
-    
     .announcement-box { background: #FFF3E0; border-left: 4px solid #FF9800; padding: 12px; border-radius: 0 12px 12px 0; margin-bottom: 16px; }
   </style>
 </head>
@@ -77,7 +78,6 @@
 
     <main id="app-content">
       
-      <!-- VIEW: LOGIN -->
       <div id="view-login" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Selamat Datang</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Masuk untuk melihat tabungan Anda.</p>
@@ -90,7 +90,6 @@
         <div class="text-center"><span class="text-link" onclick="navigateTo('view-register')">Daftar Warga Baru</span></div>
       </div>
 
-      <!-- VIEW: REGISTRASI -->
       <div id="view-register" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Daftar Peserta</h2>
         <div id="register-alert" class="alert"></div>
@@ -104,7 +103,6 @@
         <div class="text-center"><span class="text-link" onclick="navigateTo('view-login')">Kembali ke Login</span></div>
       </div>
 
-      <!-- VIEW: DASHBOARD WARGA -->
       <div id="view-dashboard" class="page-hidden">
         <div id="pending-alert" class="glass-card page-hidden" style="border-color: #FFE0B2;">
           <h3 style="color: #E65100;">Akun Sedang Ditinjau</h3>
@@ -122,7 +120,6 @@
               <button onclick="handleLogout()" style="background:none; border:none; color:#E53935; font-weight:600; cursor:pointer;">Keluar</button>
             </div>
             
-            <!-- Pengumuman Warga -->
             <div id="user-announcement" class="announcement-box page-hidden">
               <div style="font-size: 11px; font-weight: 700; color: #E65100; margin-bottom: 4px;">PENGUMUMAN PANITIA</div>
               <div id="announcement-text" style="font-size: 13px; color: #424242;"></div>
@@ -155,7 +152,6 @@
         </div>
       </div>
 
-      <!-- VIEW: UPLOAD BUKTI -->
       <div id="view-upload" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Upload Bukti Transfer</h3>
         <div id="upload-alert" class="alert"></div>
@@ -167,7 +163,6 @@
         </form>
       </div>
 
-      <!-- VIEW: DASHBOARD ADMIN -->
       <div id="view-admin" class="page-hidden">
         <div class="glass-card admin-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -185,43 +180,43 @@
 
         <div class="glass-card">
           <button class="btn-primary" style="margin-bottom: 12px;" onclick="navigateTo('view-admin-verify')">
-            <span class="material-icons-round">person_add</span> Verifikasi Warga Baru <span id="badge-warga" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
+            <span class="material-icons-round">person_add</span> Verifikasi Warga <span id="badge-warga" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
           </button>
           <button class="btn-primary" style="margin-bottom: 12px;" onclick="navigateTo('view-admin-validate')">
             <span class="material-icons-round">receipt_long</span> Validasi Setoran <span id="badge-setoran" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
           </button>
           <button class="btn-primary btn-outline" onclick="navigateTo('view-admin-announcement')">
-            <span class="material-icons-round">campaign</span> Buat Pengumuman
+            <span class="material-icons-round">campaign</span> Manajemen Pengumuman
           </button>
         </div>
       </div>
 
-      <!-- VIEW: ADMIN VERIFIKASI WARGA -->
       <div id="view-admin-verify" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Verifikasi Akun Warga</h3>
         <div id="admin-verify-list">Memuat...</div>
         <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
       </div>
 
-      <!-- VIEW: ADMIN VALIDASI SETORAN -->
       <div id="view-admin-validate" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Validasi Setoran Masuk</h3>
         <div id="admin-validate-list">Memuat...</div>
         <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
       </div>
 
-      <!-- VIEW: ADMIN BUAT PENGUMUMAN -->
       <div id="view-admin-announcement" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Buat Pengumuman</h3>
         <div id="announce-alert" class="alert"></div>
         <form onsubmit="event.preventDefault(); submitAnnouncement();">
           <div class="form-group">
-            <label class="form-label">Isi Pengumuman</label>
-            <textarea id="input-announcement" class="form-input" rows="4" placeholder="Ketik pengumuman untuk warga di sini..." required></textarea>
+            <textarea id="input-announcement" class="form-input" rows="3" placeholder="Ketik pengumuman baru untuk warga..." required></textarea>
           </div>
           <button type="submit" class="btn-primary" id="btn-announce">Publikasikan</button>
-          <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
         </form>
+        
+        <h4 style="margin-top: 24px; margin-bottom:12px; font-size: 14px; color: var(--text-muted);">Pengumuman Aktif</h4>
+        <div id="admin-announce-list">Memuat...</div>
+
+        <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
       </div>
 
     </main>
@@ -229,28 +224,26 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // Firebase Storage dihapus dari modul untuk optimasi ukuran
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc, orderBy, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC-TOig0avtIPi38sdD7HKLrITm5L9A37k",
       authDomain: "qurban-rt-apps.firebaseapp.com",
       projectId: "qurban-rt-apps",
-      storageBucket: "qurban-rt-apps.firebasestorage.app",
       messagingSenderId: "1044312403205",
       appId: "1:1044312403205:web:504471f63ce3f7ec49db6c"
     };
 
-    // KUNCI IMGBB (GANTI DENGAN API KEY ANDA DARI API.IMGBB.COM)
     const IMGBB_API_KEY = "f767a22a57f7fd8e8d82cc98ad177c2e";
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
     const TARGET_QURBAN = 3500000;
     
     let currentUserData = null;
-    let userTransactionsData = []; // Untuk generate PDF
+    let userTransactionsData = []; 
 
     window.navigateTo = (viewId) => {
       document.querySelectorAll('#app-content > div').forEach(el => el.classList.add('page-hidden'));
@@ -271,6 +264,7 @@
           if (currentUserData.role === 'admin') {
             navigateTo('view-admin');
             loadAdminDashboard();
+            loadAdminAnnouncements();
           } else {
             document.getElementById('user-greeting').innerText = `Halo, ${currentUserData.nama.split(' ')[0]}`;
             navigateTo('view-dashboard');
@@ -291,36 +285,22 @@
     function loadUserTransactions(uid) {
       const q = query(collection(db, "transactions"), where("uid", "==", uid));
       onSnapshot(q, (snapshot) => {
-        let totalSaved = 0;
-        let historyHTML = '';
-        userTransactionsData = []; 
-        
+        let totalSaved = 0; let historyHTML = ''; userTransactionsData = []; 
         let txs = [];
-        snapshot.forEach(doc => txs.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach(docSnap => txs.push({ id: docSnap.id, ...docSnap.data() }));
         txs.sort((a, b) => (b.tanggal?.toMillis() || 0) - (a.tanggal?.toMillis() || 0));
 
         txs.forEach((data) => {
-          if(data.status === 'disetujui') {
-              totalSaved += parseInt(data.nominal);
-              userTransactionsData.push(data); // Simpan untuk PDF
-          }
-          
+          if(data.status === 'disetujui') { totalSaved += parseInt(data.nominal); userTransactionsData.push(data); }
           let dateStr = "Menunggu...";
-          if(data.tanggal) {
-             const d = data.tanggal.toDate();
-             dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-          }
+          if(data.tanggal) { const d = data.tanggal.toDate(); dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
           
           historyHTML += `
             <div class="history-item">
-              <div>
-                <div style="font-weight:700; font-size:15px;">${formatRp(data.nominal)}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
-              </div>
+              <div><div style="font-weight:700; font-size:15px;">${formatRp(data.nominal)}</div><div style="font-size:11px; color:var(--text-muted);">${dateStr}</div></div>
               <div class="status-badge badge-${data.status}">${data.status.replace('_', ' ')}</div>
             </div>`;
         });
-
         const percent = Math.min((totalSaved / TARGET_QURBAN) * 100, 100).toFixed(1);
         document.getElementById('total-saved').innerText = formatRp(totalSaved);
         document.getElementById('progress-bar').style.width = `${percent}%`;
@@ -329,6 +309,7 @@
       });
     }
 
+    // Load Pengumuman untuk Warga
     function loadAnnouncement() {
       const q = query(collection(db, "announcements"), orderBy("tanggal", "desc"), limit(1));
       onSnapshot(q, (snapshot) => {
@@ -336,14 +317,32 @@
           const data = snapshot.docs[0].data();
           document.getElementById('announcement-text').innerText = data.isi;
           document.getElementById('user-announcement').classList.remove('page-hidden');
+        } else {
+          document.getElementById('user-announcement').classList.add('page-hidden');
         }
+      });
+    }
+
+    // Load Daftar Pengumuman untuk Admin (Takedown Feature)
+    function loadAdminAnnouncements() {
+      const q = query(collection(db, "announcements"), orderBy("tanggal", "desc"));
+      onSnapshot(q, (snapshot) => {
+        let html = '';
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
+          const tgl = d.tanggal ? d.tanggal.toDate().toLocaleDateString('id-ID') : '';
+          html += `<div class="admin-list-item" style="display:flex; justify-content:space-between; align-items:center;">
+            <div><div style="font-size:11px; color:#718096;">${tgl}</div><div style="font-size:13px; font-weight:600; margin-top:4px;">${d.isi}</div></div>
+            <button onclick="delAnnounce('${docSnap.id}')" style="background:#F44336; color:white; border:none; border-radius:6px; padding:8px 12px; font-size:11px; cursor:pointer; margin-left:12px;">Tarik</button>
+          </div>`;
+        });
+        document.getElementById('admin-announce-list').innerHTML = html || '<p style="font-size:12px; color:#718096;">Tidak ada pengumuman aktif.</p>';
       });
     }
 
     function loadAdminDashboard() {
       onSnapshot(collection(db, "transactions"), (snapshot) => {
-        let kas = 0; let setoranPending = 0;
-        let validHTML = '';
+        let kas = 0; let setoranPending = 0; let validHTML = '';
         snapshot.forEach(docSnap => {
           const d = docSnap.data();
           if(d.status === 'disetujui') kas += parseInt(d.nominal);
@@ -355,7 +354,6 @@
                 <div style="color:var(--primary); font-weight:700; margin: 4px 0;">${formatRp(d.nominal)}</div>
                 <a href="${d.url_bukti}" target="_blank" style="font-size:12px; color:#1E88E5;">Lihat Bukti Foto</a>
                 <div style="margin-top:12px; display:flex; gap:8px;">
-                  <!-- Tombol Setuju & Share WA -->
                   <button onclick="accTx('${docSnap.id}', '${d.user_hp}', '${d.nama_warga}', ${d.nominal})" style="flex:1; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Setuju & WA</button>
                   <button onclick="rejTx('${docSnap.id}')" style="flex:1; padding:8px; background:#F44336; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Tolak</button>
                 </div>
@@ -373,8 +371,7 @@
           count++; const d = docSnap.data();
           html += `
             <div class="admin-list-item">
-              <div style="font-weight:700;">${d.nama}</div>
-              <div style="font-size:12px; color:#718096;">WA: ${d.no_hp} | ${d.alamat}</div>
+              <div style="font-weight:700;">${d.nama}</div><div style="font-size:12px; color:#718096;">WA: ${d.no_hp} | ${d.alamat}</div>
               <button onclick="accUser('${d.uid}')" style="width:100%; margin-top:12px; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer;">Aktifkan Akun</button>
             </div>`;
         });
@@ -384,114 +381,56 @@
     }
 
     window.accUser = async (uid) => { await updateDoc(doc(db, "users", uid), { status_aktif: true }); alert("Akun warga aktif!"); };
-    
-    // Validasi Setoran + Eksekusi Generator Teks WA
     window.accTx = async (txId, hp, nama, nominal) => { 
       await updateDoc(doc(db, "transactions", txId), { status: 'disetujui' }); 
-      
       const text = `Halo Bapak/Ibu ${nama},\n\nAlhamdulillah setoran tabungan Qurban sebesar *${formatRp(nominal)}* telah kami terima dan tervalidasi.\n\nSemoga menjadi amal jariyah. Amin.\n- Panitia Qurban RT`;
-      const waUrl = `https://wa.me/${hp.replace(/^0/, '62')}?text=${encodeURIComponent(text)}`;
-      window.open(waUrl, '_blank'); // Buka link WA di tab baru
+      window.open(`https://wa.me/${hp.replace(/^0/, '62')}?text=${encodeURIComponent(text)}`, '_blank');
     };
-    
     window.rejTx = async (txId) => { await updateDoc(doc(db, "transactions", txId), { status: 'ditolak' }); alert("Setoran ditolak!"); };
 
     window.submitAnnouncement = async () => {
       const btn = document.getElementById('btn-announce');
       btn.disabled = true; btn.innerText = "Memproses...";
       try {
-        await addDoc(collection(db, "announcements"), {
-          isi: document.getElementById('input-announcement').value,
-          tanggal: serverTimestamp()
-        });
-        showAlert('success', 'Pengumuman disiarkan!', 'announce');
-        document.getElementById('input-announcement').value = '';
+        await addDoc(collection(db, "announcements"), { isi: document.getElementById('input-announcement').value, tanggal: serverTimestamp() });
+        showAlert('success', 'Pengumuman disiarkan!', 'announce'); document.getElementById('input-announcement').value = '';
       } catch(e) { showAlert('error', 'Gagal mempublikasikan', 'announce'); }
       finally { btn.disabled = false; btn.innerText = "Publikasikan"; }
     }
+    window.delAnnounce = async (id) => { if(confirm('Tarik pengumuman ini?')) await deleteDoc(doc(db, "announcements", id)); };
 
-    // PENGGANTIAN UPLOAD FIREBASE KE API IMGBB
     window.handleUploadSubmit = async function() {
       const btn = document.getElementById('btn-upload');
       const fileInput = document.getElementById('upload-file').files[0];
       if(!fileInput) return showAlert('error', 'Pilih foto bukti transfer', 'upload');
-      
-      btn.disabled = true; btn.innerText = "Mengunggah ke ImgBB...";
-      
+      btn.disabled = true; btn.innerText = "Mengunggah...";
       try {
-        // 1. Upload ke ImgBB menggunakan fetch
-        const formData = new FormData();
-        formData.append("image", fileInput);
-        
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-            method: "POST",
-            body: formData
-        });
+        const formData = new FormData(); formData.append("image", fileInput);
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
         const imgbbData = await response.json();
-        const imageUrl = imgbbData.data.url;
-
-        // 2. Simpan link gambar ke Firestore
-        await addDoc(collection(db, "transactions"), { 
-            uid: currentUserData.uid, 
-            nama_warga: currentUserData.nama,
-            user_hp: currentUserData.no_hp,
-            nominal: parseInt(document.getElementById('upload-amount').value), 
-            url_bukti: imageUrl, 
-            status: "menunggu_validasi", 
-            tanggal: serverTimestamp() 
-        });
         
-        showAlert('success', 'Berhasil dikirim! Menunggu admin...', 'upload');
-        document.getElementById('form-upload').reset(); 
-        setTimeout(() => navigateTo('view-dashboard'), 2000);
-      } catch (e) { 
-        console.error(e);
-        showAlert('error', 'Gagal mengunggah bukti ke server ImgBB.', 'upload'); 
-      } finally { 
-        btn.disabled = false; btn.innerText = "Kirim Konfirmasi"; 
-      }
+        await addDoc(collection(db, "transactions"), { uid: currentUserData.uid, nama_warga: currentUserData.nama, user_hp: currentUserData.no_hp, nominal: parseInt(document.getElementById('upload-amount').value), url_bukti: imgbbData.data.url, status: "menunggu_validasi", tanggal: serverTimestamp() });
+        showAlert('success', 'Berhasil dikirim! Menunggu admin...', 'upload'); document.getElementById('form-upload').reset(); setTimeout(() => navigateTo('view-dashboard'), 2000);
+      } catch (e) { showAlert('error', 'Gagal mengunggah bukti.', 'upload'); } finally { btn.disabled = false; btn.innerText = "Kirim Konfirmasi"; }
     };
 
-    // FUNGSI GENERATE PDF BUKA DI TAB BARU
     window.generatePDF = function() {
-        const { jsPDF } = window.jspdf;
-        const docPDF = new jsPDF();
-        
-        docPDF.setFont("helvetica", "bold");
-        docPDF.setFontSize(16);
-        docPDF.text("LAPORAN TABUNGAN QURBAN", 105, 20, null, null, "center");
-        
-        docPDF.setFontSize(12);
-        docPDF.setFont("helvetica", "normal");
-        docPDF.text(`Nama Warga : ${currentUserData.nama}`, 20, 40);
-        docPDF.text(`Alamat : ${currentUserData.alamat}`, 20, 48);
-        docPDF.text(`Total Disetor : ${document.getElementById('total-saved').innerText}`, 20, 56);
-        
-        docPDF.line(20, 62, 190, 62);
-        docPDF.setFont("helvetica", "bold");
-        docPDF.text("Riwayat Transaksi (Disetujui)", 20, 72);
-        
-        docPDF.setFont("helvetica", "normal");
-        let yPos = 82;
-        if(userTransactionsData.length === 0) {
-            docPDF.text("- Belum ada transaksi disetujui -", 20, yPos);
-        } else {
-            userTransactionsData.forEach((tx, index) => {
-                const tgl = tx.tanggal ? tx.tanggal.toDate().toLocaleDateString('id-ID') : '-';
-                docPDF.text(`${index + 1}. ${tgl} - ${formatRp(tx.nominal)}`, 20, yPos);
-                yPos += 8;
-            });
-        }
-        
-        // Membuka PDF di tab browser baru menggunakan Blob dan URL
-        const pdfBlob = docPDF.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl, '_blank');
+        const { jsPDF } = window.jspdf; const docPDF = new jsPDF();
+        docPDF.setFont("helvetica", "bold"); docPDF.setFontSize(16); docPDF.text("LAPORAN TABUNGAN QURBAN", 105, 20, null, null, "center");
+        docPDF.setFontSize(12); docPDF.setFont("helvetica", "normal");
+        docPDF.text(`Nama Warga : ${currentUserData.nama}`, 20, 40); docPDF.text(`Alamat : ${currentUserData.alamat}`, 20, 48); docPDF.text(`Total Disetor : ${document.getElementById('total-saved').innerText}`, 20, 56);
+        docPDF.line(20, 62, 190, 62); docPDF.setFont("helvetica", "bold"); docPDF.text("Riwayat Transaksi (Disetujui)", 20, 72);
+        docPDF.setFont("helvetica", "normal"); let yPos = 82;
+        if(userTransactionsData.length === 0) docPDF.text("- Belum ada transaksi disetujui -", 20, yPos);
+        else userTransactionsData.forEach((tx, index) => {
+            const tgl = tx.tanggal ? tx.tanggal.toDate().toLocaleDateString('id-ID') : '-';
+            docPDF.text(`${index + 1}. ${tgl} - ${formatRp(tx.nominal)}`, 20, yPos); yPos += 8;
+        });
+        window.open(URL.createObjectURL(docPDF.output('blob')), '_blank');
     };
 
     window.handleRegister = async function() {
-      const btn = document.getElementById('btn-register');
-      const phone = document.getElementById('reg-phone').value;
+      const btn = document.getElementById('btn-register'); const phone = document.getElementById('reg-phone').value;
       btn.disabled = true; btn.innerText = "Memproses...";
       try {
         const res = await createUserWithEmailAndPassword(auth, `${phone}@qurban.rt`, document.getElementById('reg-pass').value);
@@ -504,17 +443,22 @@
         showAlert('error', msg, 'register');
       } finally { btn.disabled = false; btn.innerText = "Daftar"; }
     };
-
     window.handleLogin = async function() {
-      const btn = document.getElementById('btn-login');
-      btn.disabled = true; btn.innerText = "Masuk...";
-      try {
-        await signInWithEmailAndPassword(auth, `${document.getElementById('login-phone').value}@qurban.rt`, document.getElementById('login-pass').value);
-      } catch (e) { showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login'); } 
-      finally { btn.disabled = false; btn.innerText = "Masuk"; }
+      const btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerText = "Masuk...";
+      try { await signInWithEmailAndPassword(auth, `${document.getElementById('login-phone').value}@qurban.rt`, document.getElementById('login-pass').value); } 
+      catch (e) { showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login'); } finally { btn.disabled = false; btn.innerText = "Masuk"; }
     };
-
     window.handleLogout = () => signOut(auth);
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker PWA Terdaftar.', reg.scope))
+          .catch(err => console.error('Gagal daftar Service Worker.', err));
+      });
+    }
   </script>
 </body>
 </html>
