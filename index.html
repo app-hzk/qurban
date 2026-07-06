@@ -7,6 +7,7 @@
   
   <meta name="theme-color" content="#1E88E5">
   
+  <!-- Font & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,6 +16,7 @@
   <style>
     :root {
       --primary: #1E88E5;
+      --primary-dark: #1565C0;
       --bg-global: #F4F6F9;
       --text-main: #2D3748;
       --text-muted: #718096;
@@ -48,12 +50,7 @@
       padding: 6px 12px; border-radius: 20px;
     }
     .status-text { font-size: 11px; font-weight: 700; color: #2E7D32; margin-right: 6px; letter-spacing: 0.5px; }
-    
-    /* Efek Lampu Hijau */
-    .status-dot { 
-      width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; 
-      box-shadow: 0 0 8px #4CAF50; animation: pulse 2s infinite; 
-    }
+    .status-dot { width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; box-shadow: 0 0 8px #4CAF50; animation: pulse 2s infinite; }
 
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
@@ -67,7 +64,33 @@
       border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin: 16px; 
       box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04); 
     }
+
+    /* Form Styles */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+    .form-input { 
+      width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #E2E8F0;
+      background: rgba(255, 255, 255, 0.9); font-size: 14px; color: var(--text-main);
+      transition: all 0.3s ease;
+    }
+    .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
     
+    .btn-primary {
+      width: 100%; padding: 14px; border-radius: 12px; border: none; background-color: var(--primary);
+      color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.3s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background-color: var(--primary-dark); }
+    .btn-primary:disabled { background-color: #90CAF9; cursor: not-allowed; }
+
+    .text-link { color: var(--primary); font-weight: 600; cursor: pointer; text-decoration: none; font-size: 14px; }
+    .text-center { text-align: center; margin-top: 16px; }
+
+    /* Alert Message */
+    .alert { padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+    .alert-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+    .alert-error { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+
     .page-hidden { display: none !important; }
   </style>
 </head>
@@ -83,17 +106,71 @@
     </header>
 
     <main id="app-content">
-      <div id="view-init" class="glass-card">
-        <h3 style="margin-bottom: 12px; font-weight: 600;">Inisialisasi Sistem</h3>
-        <p id="db-status-text" style="color: var(--text-muted); font-size: 14px;">Membuka koneksi ke Firebase...</p>
+      
+      <!-- VIEW: LOGIN -->
+      <div id="view-login" class="glass-card">
+        <h2 style="margin-bottom: 8px; font-weight: 700; font-size: 22px;">Selamat Datang</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Silakan masuk untuk melihat tabungan Qurban Anda.</p>
+
+        <div id="login-alert" class="alert"></div>
+
+        <form id="form-login" onsubmit="event.preventDefault(); handleLogin();">
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp</label>
+            <input type="number" id="login-phone" class="form-input" placeholder="Contoh: 08123456789" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kata Sandi</label>
+            <input type="password" id="login-pass" class="form-input" placeholder="Masukkan kata sandi" required>
+          </div>
+          <button type="submit" class="btn-primary" id="btn-login">Masuk</button>
+        </form>
+
+        <div class="text-center" style="font-size: 14px; color: var(--text-muted);">
+          Belum punya akun? <span class="text-link" onclick="navigateTo('view-register')">Daftar Warga</span>
+        </div>
       </div>
+
+      <!-- VIEW: REGISTRASI -->
+      <div id="view-register" class="glass-card page-hidden">
+        <h2 style="margin-bottom: 8px; font-weight: 700; font-size: 22px;">Daftar Peserta</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Lengkapi data diri untuk pendaftaran Shohibul Qurban.</p>
+
+        <div id="register-alert" class="alert"></div>
+
+        <form id="form-register" onsubmit="event.preventDefault(); handleRegister();">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" id="reg-name" class="form-input" placeholder="Sesuai KTP" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp</label>
+            <input type="number" id="reg-phone" class="form-input" placeholder="Contoh: 08123456789" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alamat / Nomor Rumah</label>
+            <input type="text" id="reg-address" class="form-input" placeholder="Contoh: Blok A No. 12" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Buat Kata Sandi</label>
+            <input type="password" id="reg-pass" class="form-input" placeholder="Minimal 6 karakter" required minlength="6">
+          </div>
+          <button type="submit" class="btn-primary" id="btn-register">Daftar Sekarang</button>
+        </form>
+
+        <div class="text-center" style="font-size: 14px; color: var(--text-muted);">
+          Sudah terdaftar? <span class="text-link" onclick="navigateTo('view-login')">Masuk di sini</span>
+        </div>
+      </div>
+
     </main>
   </div>
 
+  <!-- Firebase SDK Modules -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     // KUNCI KONFIGURASI: Ganti dengan objek config yang Anda dapatkan dari Firebase Console
     const firebaseConfig = {
@@ -107,28 +184,93 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+    const auth = getAuth(app);
 
-    async function checkDatabaseConnection() {
-      const statusText = document.getElementById('db-status-text');
-      try {
-        await getDocs(collection(db, "users"));
-        statusText.innerHTML = "🟢 Berhasil terhubung ke Firebase Firestore. Lingkungan kerja siap!";
-        statusText.style.color = "#2E7D32";
-      } catch (error) {
-        console.error("Firebase Init Error:", error);
-        statusText.innerHTML = "🔴 Gagal terhubung ke database. Periksa kembali API Key dan aturan Firestore.";
-        statusText.style.color = "#C62828";
-        
-        // Ubah indikator lampu menjadi merah
-        document.querySelector('.status-dot').style.backgroundColor = '#E53935';
-        document.querySelector('.status-dot').style.boxShadow = '0 0 8px #E53935';
-        document.querySelector('.status-text').innerText = 'OFFLINE';
-        document.querySelector('.status-text').style.color = '#C62828';
-      }
+    // Fungsi Navigasi SPA
+    window.navigateTo = function(viewId) {
+      document.querySelectorAll('#app-content > div').forEach(el => {
+        el.classList.add('page-hidden');
+      });
+      document.getElementById(viewId).classList.remove('page-hidden');
+      // Reset alert & form saat pindah halaman
+      document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
+      document.getElementById('form-login').reset();
+      document.getElementById('form-register').reset();
+    };
+
+    // Fungsi Tampilkan Alert
+    function showAlert(type, message, view) {
+      const alertBox = document.getElementById(`${view}-alert`);
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerText = message;
+      alertBox.style.display = 'block';
     }
 
-    window.addEventListener('DOMContentLoaded', checkDatabaseConnection);
+    // Handle Registrasi
+    window.handleRegister = async function() {
+      const btn = document.getElementById('btn-register');
+      const name = document.getElementById('reg-name').value;
+      const phone = document.getElementById('reg-phone').value;
+      const address = document.getElementById('reg-address').value;
+      const pass = document.getElementById('reg-pass').value;
+      
+      // Trik autentikasi: No HP diubah jadi format email agar diterima Firebase Auth
+      const dummyEmail = `${phone}@qurban.rt`;
+
+      btn.disabled = true;
+      btn.innerText = "Memproses...";
+
+      try {
+        // 1. Buat user di Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, dummyEmail, pass);
+        const user = userCredential.user;
+
+        // 2. Simpan data lengkap ke Firestore 'users'
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          nama: name,
+          no_hp: phone,
+          alamat: address,
+          role: "user",
+          status_aktif: false, // Menunggu persetujuan Admin
+          created_at: new Date().toISOString()
+        });
+
+        showAlert('success', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Admin RT.', 'register');
+        document.getElementById('form-register').reset();
+      } catch (error) {
+        console.error("Register Error:", error);
+        let msg = "Terjadi kesalahan. Silakan coba lagi.";
+        if(error.code === 'auth/email-already-in-use') msg = "Nomor HP ini sudah terdaftar!";
+        showAlert('error', msg, 'register');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Daftar Sekarang";
+      }
+    };
+
+    // Handle Login
+    window.handleLogin = async function() {
+      const btn = document.getElementById('btn-login');
+      const phone = document.getElementById('login-phone').value;
+      const pass = document.getElementById('login-pass').value;
+      const dummyEmail = `${phone}@qurban.rt`;
+
+      btn.disabled = true;
+      btn.innerText = "Masuk...";
+
+      try {
+        await signInWithEmailAndPassword(auth, dummyEmail, pass);
+        showAlert('success', 'Berhasil masuk! Memuat dasbor...', 'login');
+        // TODO Fase 3: Redirect ke View Dashboard
+      } catch (error) {
+        console.error("Login Error:", error);
+        showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Masuk";
+      }
+    };
   </script>
 </body>
 </html>
