@@ -6,93 +6,59 @@
   <title>Tabungan Qurban v1.0.0 (dev)</title>
   
   <meta name="theme-color" content="#1E88E5">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
   <style>
-    :root {
-      --primary: #1E88E5;
-      --primary-dark: #1565C0;
-      --bg-global: #F4F6F9;
-      --text-main: #2D3748;
-      --text-muted: #718096;
-      --glass-bg: rgba(255, 255, 255, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.4);
-    }
-
+    :root { --primary: #1E88E5; --primary-dark: #1565C0; --bg-global: #F4F6F9; --text-main: #2D3748; --text-muted: #718096; --glass-bg: rgba(255, 255, 255, 0.75); --glass-border: rgba(255, 255, 255, 0.4); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-global); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+    #app-container { width: 100%; max-width: 480px; min-height: 100vh; background-color: #FFFFFF; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow-x: hidden; }
 
-    #app-container {
-      width: 100%; max-width: 480px; min-height: 100vh; background-color: #FFFFFF;
-      position: relative; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-      display: flex; flex-direction: column;
-    }
-
-    /* Header & Indikator Status */
     .app-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
     .app-title { font-size: 18px; font-weight: 700; }
-    .status-container {
-      display: flex; align-items: center; background: var(--glass-bg);
-      backdrop-filter: blur(8px); border: 1px solid var(--glass-border);
-      padding: 6px 12px; border-radius: 20px;
-    }
+    
+    /* Indikator Lampu Hijau SYNCED */
+    .status-container { display: flex; align-items: center; background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); padding: 6px 12px; border-radius: 20px; }
     .status-text { font-size: 11px; font-weight: 700; color: #2E7D32; margin-right: 6px; letter-spacing: 0.5px; }
     .status-dot { width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; box-shadow: 0 0 8px #4CAF50; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76,175,80,0.7); } 70% { box-shadow: 0 0 0 8px rgba(76,175,80,0); } 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); } }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-      70% { box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
-    }
+    .glass-card { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin: 16px; box-shadow: 0 8px 32px rgba(31,38,135,0.04); }
+    .page-hidden { display: none !important; }
 
-    .glass-card { 
-      background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); 
-      border-radius: 24px; padding: 24px; margin: 16px; box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04); 
-    }
-
-    /* Form Styles */
+    /* Form & Buttons */
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
-    .form-input { 
-      width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #E2E8F0;
-      background: rgba(255, 255, 255, 0.9); font-size: 14px;
-    }
+    .form-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #E2E8F0; background: rgba(255,255,255,0.9); font-size: 14px; }
     .form-input:focus { outline: none; border-color: var(--primary); }
-    
-    .btn-primary {
-      width: 100%; padding: 14px; border-radius: 12px; border: none; background-color: var(--primary);
-      color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
+    .btn-primary { width: 100%; padding: 14px; border-radius: 12px; border: none; background-color: var(--primary); color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
     .btn-primary:disabled { background-color: #90CAF9; }
     .btn-secondary { background-color: #E2E8F0; color: var(--text-main); margin-top: 12px; }
-    
     .text-link { color: var(--primary); font-weight: 600; cursor: pointer; font-size: 14px; }
     .text-center { text-align: center; margin-top: 16px; }
     .alert { padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
     .alert-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
     .alert-error { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
-    .alert-warning { background: #FFF3E0; color: #E65100; border: 1px solid #FFE0B2; }
 
-    /* Dashboard Specific Styles */
+    /* Dashboard UI */
     .progress-container { background: #E2E8F0; border-radius: 20px; height: 12px; width: 100%; margin: 12px 0; overflow: hidden; }
     .progress-bar { background: var(--primary); height: 100%; border-radius: 20px; width: 0%; transition: width 0.5s ease-in-out; }
-    
     .balance-box { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #E2E8F0; }
-    .balance-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-    .balance-amount { font-size: 24px; font-weight: 700; color: var(--primary); margin-top: 4px; }
-    .outstanding-text { font-size: 12px; color: #E53935; font-weight: 600; margin-top: 4px; }
-
-    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #EDF2F7; }
+    
+    /* Buku Tabungan UI */
+    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #E2E8F0; }
     .history-item:last-child { border-bottom: none; }
-    .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
-    .status-pending { background: #FFF3E0; color: #E65100; }
-    .status-approved { background: #E8F5E9; color: #2E7D32; }
+    .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge-menunggu_validasi { background: #FFF3E0; color: #E65100; }
+    .badge-disetujui { background: #E8F5E9; color: #2E7D32; }
+    .badge-ditolak { background: #FFEBEE; color: #C62828; }
 
-    .page-hidden { display: none !important; }
+    /* Admin UI */
+    .admin-card { background: #2D3748; color: white; }
+    .admin-list-item { background: white; padding: 14px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 12px; }
   </style>
 </head>
 <body>
@@ -109,93 +75,113 @@
     <main id="app-content">
       
       <div id="view-login" class="glass-card page-hidden">
-        <h2 style="margin-bottom: 8px; font-weight: 700; font-size: 22px;">Selamat Datang</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Silakan masuk untuk melihat tabungan Qurban Anda.</p>
+        <h2 style="margin-bottom: 8px; font-weight: 700;">Selamat Datang</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Masuk untuk melihat tabungan Anda.</p>
         <div id="login-alert" class="alert"></div>
         <form id="form-login" onsubmit="event.preventDefault(); handleLogin();">
-          <div class="form-group">
-            <label class="form-label">Nomor WhatsApp</label>
-            <input type="number" id="login-phone" class="form-input" placeholder="Contoh: 08123456789" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Kata Sandi</label>
-            <input type="password" id="login-pass" class="form-input" placeholder="Masukkan kata sandi" required>
-          </div>
+          <div class="form-group"><label class="form-label">Nomor WhatsApp</label><input type="number" id="login-phone" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Kata Sandi</label><input type="password" id="login-pass" class="form-input" required></div>
           <button type="submit" class="btn-primary" id="btn-login">Masuk</button>
         </form>
-        <div class="text-center" style="font-size: 14px; color: var(--text-muted);">
-          Belum punya akun? <span class="text-link" onclick="navigateTo('view-register')">Daftar Warga</span>
-        </div>
+        <div class="text-center"><span class="text-link" onclick="navigateTo('view-register')">Daftar Warga Baru</span></div>
       </div>
 
       <div id="view-register" class="glass-card page-hidden">
-        <h2 style="margin-bottom: 8px; font-weight: 700; font-size: 22px;">Daftar Peserta</h2>
+        <h2 style="margin-bottom: 8px; font-weight: 700;">Daftar Peserta</h2>
         <div id="register-alert" class="alert"></div>
         <form id="form-register" onsubmit="event.preventDefault(); handleRegister();">
           <div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="reg-name" class="form-input" required></div>
           <div class="form-group"><label class="form-label">Nomor WhatsApp</label><input type="number" id="reg-phone" class="form-input" required></div>
           <div class="form-group"><label class="form-label">Alamat / Nomor Rumah</label><input type="text" id="reg-address" class="form-input" required></div>
           <div class="form-group"><label class="form-label">Kata Sandi</label><input type="password" id="reg-pass" class="form-input" required minlength="6"></div>
-          <button type="submit" class="btn-primary" id="btn-register">Daftar Sekarang</button>
+          <button type="submit" class="btn-primary" id="btn-register">Daftar</button>
         </form>
-        <div class="text-center" style="font-size: 14px; color: var(--text-muted);">
-          Sudah terdaftar? <span class="text-link" onclick="navigateTo('view-login')">Masuk di sini</span>
-        </div>
+        <div class="text-center"><span class="text-link" onclick="navigateTo('view-login')">Kembali ke Login</span></div>
       </div>
 
       <div id="view-dashboard" class="page-hidden">
-        
         <div id="pending-alert" class="glass-card page-hidden" style="border-color: #FFE0B2;">
-          <h3 style="color: #E65100; margin-bottom: 8px;">Akun Sedang Ditinjau</h3>
-          <p style="font-size: 14px; color: var(--text-muted);">Mohon tunggu admin RT memvalidasi akun Anda. Fitur tabungan akan terbuka setelah akun disetujui.</p>
+          <h3 style="color: #E65100;">Akun Sedang Ditinjau</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin-top:8px;">Mohon tunggu admin RT memvalidasi akun Anda.</p>
           <button class="btn-primary btn-secondary" onclick="handleLogout()">Keluar</button>
         </div>
 
-        <div id="active-dashboard" class="glass-card page-hidden">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <div>
-              <h2 style="font-size: 20px;" id="user-greeting">Halo, Warga</h2>
-              <p style="font-size: 12px; color: var(--text-muted);">Shohibul Qurban 2026-2027</p>
+        <div id="active-dashboard" class="page-hidden">
+          <div class="glass-card" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div>
+                <h2 style="font-size: 20px;" id="user-greeting">Halo, Warga</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">Shohibul Qurban 2026-2027</p>
+              </div>
+              <button onclick="handleLogout()" style="background:none; border:none; color:#E53935; font-weight:600; cursor:pointer;">Keluar</button>
             </div>
-            <button onclick="handleLogout()" style="background:none; border:none; color:#E53935; font-weight:600; cursor:pointer;">Keluar</button>
+            <div class="balance-box">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Total Tabungan Terkumpul</div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="total-saved">Rp 0</div>
+              <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
+                <span style="color: var(--primary);" id="progress-percent">0%</span>
+                <span style="color: var(--text-muted);">Target: Rp 3.500.000</span>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="navigateTo('view-upload')">Konfirmasi Transfer</button>
           </div>
 
-          <div class="balance-box">
-            <div class="balance-label">Total Tabungan Terkumpul</div>
-            <div class="balance-amount" id="total-saved">Rp 0</div>
-            <div class="progress-container">
-              <div class="progress-bar" id="progress-bar"></div>
+          <div class="glass-card">
+            <h3 style="font-size: 16px; margin-bottom: 12px;">Buku Tabungan Digital</h3>
+            <div id="history-list" style="font-size: 14px;">
+              <p style="text-align: center; color: var(--text-muted); padding: 10px;">Belum ada transaksi.</p>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
-              <span style="color: var(--primary);" id="progress-percent">0%</span>
-              <span style="color: var(--text-muted);">Target: Rp 3.500.000</span>
-            </div>
-            <div class="outstanding-text" id="outstanding-amount">Sisa Kekurangan: Rp 3.500.000</div>
           </div>
-
-          <button class="btn-primary" onclick="navigateTo('view-upload')">
-            <span class="material-icons-round" style="font-size: 20px;">upload_file</span>
-            Konfirmasi Transfer Baru
-          </button>
         </div>
       </div>
 
       <div id="view-upload" class="glass-card page-hidden">
-        <h3 style="margin-bottom: 16px;">Konfirmasi Transfer</h3>
+        <h3 style="margin-bottom: 16px;">Upload Bukti Transfer</h3>
         <div id="upload-alert" class="alert"></div>
         <form id="form-upload" onsubmit="event.preventDefault(); handleUploadSubmit();">
-          <div class="form-group">
-            <label class="form-label">Nominal Transfer (Rp)</label>
-            <input type="number" id="upload-amount" class="form-input" placeholder="Contoh: 500000" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Foto Bukti Transfer</label>
-            <input type="file" id="upload-file" class="form-input" accept="image/*" required style="padding: 10px;">
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Pastikan foto kuitansi/struk terlihat jelas.</p>
-          </div>
-          <button type="submit" class="btn-primary" id="btn-upload">Upload & Konfirmasi</button>
-          <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-dashboard')">Kembali</button>
+          <div class="form-group"><label class="form-label">Nominal (Rp)</label><input type="number" id="upload-amount" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Foto Bukti</label><input type="file" id="upload-file" class="form-input" accept="image/*" required></div>
+          <button type="submit" class="btn-primary" id="btn-upload">Kirim</button>
+          <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-dashboard')">Batal</button>
         </form>
+      </div>
+
+      <div id="view-admin" class="page-hidden">
+        <div class="glass-card admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2 style="font-size: 20px;">Panel Panitia RT</h2>
+              <p style="font-size: 12px; color: #A0AEC0;">Mode Administrator</p>
+            </div>
+            <button onclick="handleLogout()" style="background:none; border:none; color:#FC8181; font-weight:600; cursor:pointer;">Keluar</button>
+          </div>
+          <div style="margin-top: 20px;">
+            <div style="font-size: 12px; color: #A0AEC0;">Total Kas Global Qurban</div>
+            <div style="font-size: 28px; font-weight: 700;" id="admin-total-kas">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <button class="btn-primary" style="margin-bottom: 12px;" onclick="navigateTo('view-admin-verify')">
+            <span class="material-icons-round">person_add</span> Verifikasi Warga Baru <span id="badge-warga" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
+          </button>
+          <button class="btn-primary" onclick="navigateTo('view-admin-validate')">
+            <span class="material-icons-round">receipt_long</span> Validasi Setoran <span id="badge-setoran" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="view-admin-verify" class="glass-card page-hidden">
+        <h3 style="margin-bottom: 16px;">Verifikasi Akun Warga</h3>
+        <div id="admin-verify-list">Memuat...</div>
+        <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
+      </div>
+
+      <div id="view-admin-validate" class="glass-card page-hidden">
+        <h3 style="margin-bottom: 16px;">Validasi Setoran Masuk</h3>
+        <div id="admin-validate-list">Memuat...</div>
+        <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
       </div>
 
     </main>
@@ -203,11 +189,11 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // Konfigurasi dari Anda
+    // KUNCI KONFIGURASI DARI ANDA
     const firebaseConfig = {
       apiKey: "AIzaSyC-TOig0avtIPi38sdD7HKLrITm5L9A37k",
       authDomain: "qurban-rt-apps.firebaseapp.com",
@@ -225,177 +211,183 @@
     
     let currentUserData = null;
 
-    window.navigateTo = function(viewId) {
+    // Utilitas SPA & UI
+    window.navigateTo = (viewId) => {
       document.querySelectorAll('#app-content > div').forEach(el => el.classList.add('page-hidden'));
       document.getElementById(viewId).classList.remove('page-hidden');
       document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
     };
-
-    function showAlert(type, message, view) {
-      const alertBox = document.getElementById(`${view}-alert`);
-      alertBox.className = `alert alert-${type}`;
-      alertBox.innerText = message;
-      alertBox.style.display = 'block';
+    function showAlert(type, msg, view) {
+      const b = document.getElementById(`${view}-alert`);
+      b.className = `alert alert-${type}`; b.innerText = msg; b.style.display = 'block';
     }
+    const formatRp = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
 
-    // Pemantau Sesi (State Management)
+    // SISTEM OTENTIKASI & ROUTING ROLE
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Ambil data profil dari Firestore
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        
+        const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists()) {
           currentUserData = docSnap.data();
-          document.getElementById('user-greeting').innerText = `Halo, ${currentUserData.nama.split(' ')[0]}`;
           
-          navigateTo('view-dashboard');
-          
-          if (currentUserData.status_aktif === false) {
-            document.getElementById('pending-alert').classList.remove('page-hidden');
-            document.getElementById('active-dashboard').classList.add('page-hidden');
+          // CABANG ROLE: ADMIN vs USER
+          if (currentUserData.role === 'admin') {
+            navigateTo('view-admin');
+            loadAdminDashboard();
           } else {
-            document.getElementById('pending-alert').classList.add('page-hidden');
-            document.getElementById('active-dashboard').classList.remove('page-hidden');
-            loadUserTransactions(user.uid);
+            document.getElementById('user-greeting').innerText = `Halo, ${currentUserData.nama.split(' ')[0]}`;
+            navigateTo('view-dashboard');
+            if (!currentUserData.status_aktif) {
+              document.getElementById('pending-alert').classList.remove('page-hidden');
+              document.getElementById('active-dashboard').classList.add('page-hidden');
+            } else {
+              document.getElementById('pending-alert').classList.add('page-hidden');
+              document.getElementById('active-dashboard').classList.remove('page-hidden');
+              loadUserTransactions(user.uid);
+            }
           }
         }
       } else {
-        currentUserData = null;
-        navigateTo('view-login');
+        currentUserData = null; navigateTo('view-login');
       }
     });
 
+    // SISTEM WARGA: Load Dasbor & Buku Tabungan
     function loadUserTransactions(uid) {
-      // Listener realtime untuk buku tabungan
       const q = query(collection(db, "transactions"), where("uid", "==", uid));
       onSnapshot(q, (snapshot) => {
         let totalSaved = 0;
+        let historyHTML = '';
         
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          if(data.status === 'disetujui') {
-            totalSaved += parseInt(data.nominal);
+        // Sorting manual di frontend untuk mencegah error index Firebase
+        let txs = [];
+        snapshot.forEach(doc => txs.push({ id: doc.id, ...doc.data() }));
+        txs.sort((a, b) => (b.tanggal?.toMillis() || 0) - (a.tanggal?.toMillis() || 0));
+
+        txs.forEach((data) => {
+          if(data.status === 'disetujui') totalSaved += parseInt(data.nominal);
+          
+          let dateStr = "Menunggu...";
+          if(data.tanggal) {
+             const d = data.tanggal.toDate();
+             dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
           }
+          
+          let labelStatus = data.status.replace('_', ' ');
+          historyHTML += `
+            <div class="history-item">
+              <div>
+                <div style="font-weight:700; font-size:15px;">${formatRp(data.nominal)}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
+              </div>
+              <div class="status-badge badge-${data.status}">${labelStatus}</div>
+            </div>
+          `;
         });
 
-        // Hitung persentase & outstanding
         const percent = Math.min((totalSaved / TARGET_QURBAN) * 100, 100).toFixed(1);
-        const outstanding = TARGET_QURBAN - totalSaved;
-
-        document.getElementById('total-saved').innerText = `Rp ${totalSaved.toLocaleString('id-ID')}`;
+        document.getElementById('total-saved').innerText = formatRp(totalSaved);
         document.getElementById('progress-bar').style.width = `${percent}%`;
         document.getElementById('progress-percent').innerText = `${percent}%`;
         
-        if(outstanding > 0) {
-          document.getElementById('outstanding-amount').innerText = `Sisa Kekurangan: Rp ${outstanding.toLocaleString('id-ID')}`;
-        } else {
-          document.getElementById('outstanding-amount').innerText = `Target Lunas! Alhamdulillah.`;
-          document.getElementById('outstanding-amount').style.color = '#2E7D32';
+        if (historyHTML !== '') {
+          document.getElementById('history-list').innerHTML = historyHTML;
         }
       });
     }
 
+    // SISTEM ADMIN: Dasbor & Counter Realtime
+    function loadAdminDashboard() {
+      // Listener Kas Global
+      onSnapshot(collection(db, "transactions"), (snapshot) => {
+        let kas = 0; let setoranPending = 0;
+        let validHTML = '';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if(d.status === 'disetujui') kas += parseInt(d.nominal);
+          if(d.status === 'menunggu_validasi') {
+            setoranPending++;
+            validHTML += `
+              <div class="admin-list-item">
+                <div style="font-weight:700;">${d.nama_warga}</div>
+                <div style="color:var(--primary); font-weight:700; margin: 4px 0;">${formatRp(d.nominal)}</div>
+                <a href="${d.url_bukti}" target="_blank" style="font-size:12px; color:#1E88E5;">Lihat Bukti Foto</a>
+                <div style="margin-top:12px; display:flex; gap:8px;">
+                  <button onclick="accTx('${doc.id}')" style="flex:1; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer;">Setuju</button>
+                  <button onclick="rejTx('${doc.id}')" style="flex:1; padding:8px; background:#F44336; color:white; border:none; border-radius:8px; cursor:pointer;">Tolak</button>
+                </div>
+              </div>`;
+          }
+        });
+        document.getElementById('admin-total-kas').innerText = formatRp(kas);
+        document.getElementById('badge-setoran').innerText = setoranPending;
+        document.getElementById('admin-validate-list').innerHTML = setoranPending > 0 ? validHTML : '<p style="text-align:center; color:#718096;">Tidak ada setoran tertunda.</p>';
+      });
+
+      // Listener Verifikasi Warga
+      onSnapshot(query(collection(db, "users"), where("status_aktif", "==", false)), (snapshot) => {
+        let count = 0; let html = '';
+        snapshot.forEach(doc => {
+          count++; const d = doc.data();
+          html += `
+            <div class="admin-list-item">
+              <div style="font-weight:700;">${d.nama}</div>
+              <div style="font-size:12px; color:#718096;">WA: ${d.no_hp} | ${d.alamat}</div>
+              <button onclick="accUser('${d.uid}')" style="width:100%; margin-top:12px; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer;">Aktifkan Akun</button>
+            </div>`;
+        });
+        document.getElementById('badge-warga').innerText = count;
+        document.getElementById('admin-verify-list').innerHTML = count > 0 ? html : '<p style="text-align:center; color:#718096;">Tidak ada warga menunggu.</p>';
+      });
+    }
+
+    // Aksi Admin di Windows Global
+    window.accUser = async (uid) => { await updateDoc(doc(db, "users", uid), { status_aktif: true }); alert("Akun warga aktif!"); };
+    window.accTx = async (txId) => { await updateDoc(doc(db, "transactions", txId), { status: 'disetujui' }); alert("Setoran disetujui!"); };
+    window.rejTx = async (txId) => { await updateDoc(doc(db, "transactions", txId), { status: 'ditolak' }); alert("Setoran ditolak!"); };
+
+    // Registrasi & Login (Dengan Bug Fix dari sebelumnya)
+    window.handleRegister = async function() {
+      const btn = document.getElementById('btn-register');
+      const phone = document.getElementById('reg-phone').value;
+      btn.disabled = true; btn.innerText = "Memproses...";
+      try {
+        const res = await createUserWithEmailAndPassword(auth, `${phone}@qurban.rt`, document.getElementById('reg-pass').value);
+        await setDoc(doc(db, "users", res.user.uid), { uid: res.user.uid, nama: document.getElementById('reg-name').value, no_hp: phone, alamat: document.getElementById('reg-address').value, role: "user", status_aktif: false, created_at: new Date().toISOString() });
+        showAlert('success', 'Berhasil! Menunggu persetujuan Admin.', 'register'); document.getElementById('form-register').reset();
+      } catch (e) {
+        let msg = 'Terjadi kesalahan sistem.';
+        if (e.code === 'auth/email-already-in-use') msg = 'Nomor HP ini sudah terdaftar.';
+        else if (e.code === 'auth/operation-not-allowed') msg = 'Email/Password belum aktif di Firebase!';
+        showAlert('error', msg, 'register');
+      } finally { btn.disabled = false; btn.innerText = "Daftar"; }
+    };
+
+    window.handleLogin = async function() {
+      const btn = document.getElementById('btn-login');
+      btn.disabled = true; btn.innerText = "Masuk...";
+      try {
+        await signInWithEmailAndPassword(auth, `${document.getElementById('login-phone').value}@qurban.rt`, document.getElementById('login-pass').value);
+      } catch (e) { showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login'); } 
+      finally { btn.disabled = false; btn.innerText = "Masuk"; }
+    };
+
     window.handleUploadSubmit = async function() {
       const btn = document.getElementById('btn-upload');
-      const amount = document.getElementById('upload-amount').value;
       const fileInput = document.getElementById('upload-file').files[0];
-      
       if(!fileInput) return showAlert('error', 'Pilih foto bukti transfer', 'upload');
-      
-      btn.disabled = true;
-      btn.innerText = "Mengunggah...";
-
+      btn.disabled = true; btn.innerText = "Mengunggah...";
       try {
-        // Upload foto ke Firebase Storage
         const fileRef = ref(storage, `bukti_transfer/${currentUserData.uid}_${Date.now()}`);
         await uploadBytes(fileRef, fileInput);
-        const downloadUrl = await getDownloadURL(fileRef);
-
-        // Tulis data ke Firestore transactions
-        await addDoc(collection(db, "transactions"), {
-          uid: currentUserData.uid,
-          nama_warga: currentUserData.nama,
-          nominal: parseInt(amount),
-          url_bukti: downloadUrl,
-          status: "menunggu_validasi",
-          tanggal: serverTimestamp()
-        });
-
-        showAlert('success', 'Konfirmasi berhasil dikirim! Menunggu admin...', 'upload');
-        document.getElementById('form-upload').reset();
-        setTimeout(() => navigateTo('view-dashboard'), 2000);
-      } catch (error) {
-        console.error(error);
-        showAlert('error', 'Gagal mengunggah bukti transfer.', 'upload');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Upload & Konfirmasi";
-      }
+        await addDoc(collection(db, "transactions"), { uid: currentUserData.uid, nama_warga: currentUserData.nama, nominal: parseInt(document.getElementById('upload-amount').value), url_bukti: await getDownloadURL(fileRef), status: "menunggu_validasi", tanggal: serverTimestamp() });
+        showAlert('success', 'Berhasil dikirim! Menunggu admin...', 'upload');
+        document.getElementById('form-upload').reset(); setTimeout(() => navigateTo('view-dashboard'), 2000);
+      } catch (e) { showAlert('error', 'Gagal mengunggah bukti.', 'upload'); } 
+      finally { btn.disabled = false; btn.innerText = "Kirim"; }
     };
 
     window.handleLogout = () => signOut(auth);
-
-    // Fungsi Login & Register tetap sama dengan Fase 2
-    window.handleLogin = async function() {
-      const btn = document.getElementById('btn-login');
-      const phone = document.getElementById('login-phone').value;
-      const pass = document.getElementById('login-pass').value;
-      btn.disabled = true; btn.innerText = "Masuk...";
-      try {
-        await signInWithEmailAndPassword(auth, `${phone}@qurban.rt`, pass);
-      } catch (e) {
-        showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login');
-      } finally {
-        btn.disabled = false; btn.innerText = "Masuk";
-      }
-    };
-
-        window.handleRegister = async function() {
-      const btn = document.getElementById('btn-register');
-      const phone = document.getElementById('reg-phone').value;
-      const dummyEmail = `${phone}@qurban.rt`;
-      
-      btn.disabled = true; 
-      btn.innerText = "Memproses...";
-      
-      try {
-        const res = await createUserWithEmailAndPassword(auth, dummyEmail, document.getElementById('reg-pass').value);
-        
-        await setDoc(doc(db, "users", res.user.uid), {
-          uid: res.user.uid,
-          nama: document.getElementById('reg-name').value,
-          no_hp: phone,
-          alamat: document.getElementById('reg-address').value,
-          role: "user",
-          status_aktif: false,
-          created_at: new Date().toISOString()
-        });
-        
-        showAlert('success', 'Berhasil! Menunggu persetujuan Admin.', 'register');
-        document.getElementById('form-register').reset();
-        
-      } catch (e) {
-        // Log eror asli ke console untuk keperluan audit/debugging
-        console.error("Register Bug Terdeteksi:", e); 
-        
-        // Memecah pesan eror sesuai balasan server Firebase
-        let errorMsg = 'Terjadi kesalahan sistem. Cek koneksi internet Anda.';
-        if (e.code === 'auth/email-already-in-use') {
-            errorMsg = 'Nomor HP ini sudah terdaftar. Silakan login.';
-        } else if (e.code === 'auth/operation-not-allowed') {
-            errorMsg = 'Sistem ditolak: Fitur Authentication Email/Password belum diaktifkan di Firebase Console!';
-        } else if (e.code === 'auth/weak-password') {
-            errorMsg = 'Kata sandi terlalu lemah (minimal 6 karakter).';
-        }
-        
-        showAlert('error', errorMsg, 'register');
-      } finally {
-        btn.disabled = false; 
-        btn.innerText = "Daftar Sekarang";
-      }
-    };
-
   </script>
 </body>
 </html>
