@@ -351,13 +351,17 @@
       }
     };
 
-    window.handleRegister = async function() {
+        window.handleRegister = async function() {
       const btn = document.getElementById('btn-register');
       const phone = document.getElementById('reg-phone').value;
       const dummyEmail = `${phone}@qurban.rt`;
-      btn.disabled = true; btn.innerText = "Memproses...";
+      
+      btn.disabled = true; 
+      btn.innerText = "Memproses...";
+      
       try {
         const res = await createUserWithEmailAndPassword(auth, dummyEmail, document.getElementById('reg-pass').value);
+        
         await setDoc(doc(db, "users", res.user.uid), {
           uid: res.user.uid,
           nama: document.getElementById('reg-name').value,
@@ -367,13 +371,31 @@
           status_aktif: false,
           created_at: new Date().toISOString()
         });
+        
         showAlert('success', 'Berhasil! Menunggu persetujuan Admin.', 'register');
+        document.getElementById('form-register').reset();
+        
       } catch (e) {
-        showAlert('error', 'Nomor HP ini sudah terdaftar.', 'register');
+        // Log eror asli ke console untuk keperluan audit/debugging
+        console.error("Register Bug Terdeteksi:", e); 
+        
+        // Memecah pesan eror sesuai balasan server Firebase
+        let errorMsg = 'Terjadi kesalahan sistem. Cek koneksi internet Anda.';
+        if (e.code === 'auth/email-already-in-use') {
+            errorMsg = 'Nomor HP ini sudah terdaftar. Silakan login.';
+        } else if (e.code === 'auth/operation-not-allowed') {
+            errorMsg = 'Sistem ditolak: Fitur Authentication Email/Password belum diaktifkan di Firebase Console!';
+        } else if (e.code === 'auth/weak-password') {
+            errorMsg = 'Kata sandi terlalu lemah (minimal 6 karakter).';
+        }
+        
+        showAlert('error', errorMsg, 'register');
       } finally {
-        btn.disabled = false; btn.innerText = "Daftar Sekarang";
+        btn.disabled = false; 
+        btn.innerText = "Daftar Sekarang";
       }
     };
+
   </script>
 </body>
 </html>
