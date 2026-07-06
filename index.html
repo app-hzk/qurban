@@ -11,6 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
+  <!-- jsPDF untuk fitur cetak laporan -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     :root { --primary: #1E88E5; --primary-dark: #1565C0; --bg-global: #F4F6F9; --text-main: #2D3748; --text-muted: #718096; --glass-bg: rgba(255, 255, 255, 0.75); --glass-border: rgba(255, 255, 255, 0.4); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -20,7 +23,6 @@
     .app-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
     .app-title { font-size: 18px; font-weight: 700; }
     
-    /* Indikator Lampu Hijau SYNCED */
     .status-container { display: flex; align-items: center; background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); padding: 6px 12px; border-radius: 20px; }
     .status-text { font-size: 11px; font-weight: 700; color: #2E7D32; margin-right: 6px; letter-spacing: 0.5px; }
     .status-dot { width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; box-shadow: 0 0 8px #4CAF50; animation: pulse 2s infinite; }
@@ -29,26 +31,26 @@
     .glass-card { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin: 16px; box-shadow: 0 8px 32px rgba(31,38,135,0.04); }
     .page-hidden { display: none !important; }
 
-    /* Form & Buttons */
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
     .form-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #E2E8F0; background: rgba(255,255,255,0.9); font-size: 14px; }
     .form-input:focus { outline: none; border-color: var(--primary); }
+    
     .btn-primary { width: 100%; padding: 14px; border-radius: 12px; border: none; background-color: var(--primary); color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
     .btn-primary:disabled { background-color: #90CAF9; }
     .btn-secondary { background-color: #E2E8F0; color: var(--text-main); margin-top: 12px; }
+    .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    
     .text-link { color: var(--primary); font-weight: 600; cursor: pointer; font-size: 14px; }
     .text-center { text-align: center; margin-top: 16px; }
     .alert { padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
     .alert-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
     .alert-error { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
 
-    /* Dashboard UI */
     .progress-container { background: #E2E8F0; border-radius: 20px; height: 12px; width: 100%; margin: 12px 0; overflow: hidden; }
     .progress-bar { background: var(--primary); height: 100%; border-radius: 20px; width: 0%; transition: width 0.5s ease-in-out; }
     .balance-box { background: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #E2E8F0; }
     
-    /* Buku Tabungan UI */
     .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #E2E8F0; }
     .history-item:last-child { border-bottom: none; }
     .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
@@ -56,9 +58,10 @@
     .badge-disetujui { background: #E8F5E9; color: #2E7D32; }
     .badge-ditolak { background: #FFEBEE; color: #C62828; }
 
-    /* Admin UI */
     .admin-card { background: #2D3748; color: white; }
     .admin-list-item { background: white; padding: 14px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 12px; }
+    
+    .announcement-box { background: #FFF3E0; border-left: 4px solid #FF9800; padding: 12px; border-radius: 0 12px 12px 0; margin-bottom: 16px; }
   </style>
 </head>
 <body>
@@ -74,6 +77,7 @@
 
     <main id="app-content">
       
+      <!-- VIEW: LOGIN -->
       <div id="view-login" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Selamat Datang</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Masuk untuk melihat tabungan Anda.</p>
@@ -86,6 +90,7 @@
         <div class="text-center"><span class="text-link" onclick="navigateTo('view-register')">Daftar Warga Baru</span></div>
       </div>
 
+      <!-- VIEW: REGISTRASI -->
       <div id="view-register" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Daftar Peserta</h2>
         <div id="register-alert" class="alert"></div>
@@ -99,6 +104,7 @@
         <div class="text-center"><span class="text-link" onclick="navigateTo('view-login')">Kembali ke Login</span></div>
       </div>
 
+      <!-- VIEW: DASHBOARD WARGA -->
       <div id="view-dashboard" class="page-hidden">
         <div id="pending-alert" class="glass-card page-hidden" style="border-color: #FFE0B2;">
           <h3 style="color: #E65100;">Akun Sedang Ditinjau</h3>
@@ -115,6 +121,13 @@
               </div>
               <button onclick="handleLogout()" style="background:none; border:none; color:#E53935; font-weight:600; cursor:pointer;">Keluar</button>
             </div>
+            
+            <!-- Pengumuman Warga -->
+            <div id="user-announcement" class="announcement-box page-hidden">
+              <div style="font-size: 11px; font-weight: 700; color: #E65100; margin-bottom: 4px;">PENGUMUMAN PANITIA</div>
+              <div id="announcement-text" style="font-size: 13px; color: #424242;"></div>
+            </div>
+
             <div class="balance-box">
               <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Total Tabungan Terkumpul</div>
               <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="total-saved">Rp 0</div>
@@ -124,7 +137,13 @@
                 <span style="color: var(--text-muted);">Target: Rp 3.500.000</span>
               </div>
             </div>
-            <button class="btn-primary" onclick="navigateTo('view-upload')">Konfirmasi Transfer</button>
+            
+            <button class="btn-primary" onclick="navigateTo('view-upload')">
+              <span class="material-icons-round">upload_file</span> Konfirmasi Transfer
+            </button>
+            <button class="btn-primary btn-outline" style="margin-top: 12px;" onclick="generatePDF()">
+              <span class="material-icons-round">picture_as_pdf</span> Cetak Rekap (PDF)
+            </button>
           </div>
 
           <div class="glass-card">
@@ -136,17 +155,19 @@
         </div>
       </div>
 
+      <!-- VIEW: UPLOAD BUKTI -->
       <div id="view-upload" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Upload Bukti Transfer</h3>
         <div id="upload-alert" class="alert"></div>
         <form id="form-upload" onsubmit="event.preventDefault(); handleUploadSubmit();">
           <div class="form-group"><label class="form-label">Nominal (Rp)</label><input type="number" id="upload-amount" class="form-input" required></div>
           <div class="form-group"><label class="form-label">Foto Bukti</label><input type="file" id="upload-file" class="form-input" accept="image/*" required></div>
-          <button type="submit" class="btn-primary" id="btn-upload">Kirim</button>
+          <button type="submit" class="btn-primary" id="btn-upload">Kirim Konfirmasi</button>
           <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-dashboard')">Batal</button>
         </form>
       </div>
 
+      <!-- VIEW: DASHBOARD ADMIN -->
       <div id="view-admin" class="page-hidden">
         <div class="glass-card admin-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -166,22 +187,41 @@
           <button class="btn-primary" style="margin-bottom: 12px;" onclick="navigateTo('view-admin-verify')">
             <span class="material-icons-round">person_add</span> Verifikasi Warga Baru <span id="badge-warga" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
           </button>
-          <button class="btn-primary" onclick="navigateTo('view-admin-validate')">
+          <button class="btn-primary" style="margin-bottom: 12px;" onclick="navigateTo('view-admin-validate')">
             <span class="material-icons-round">receipt_long</span> Validasi Setoran <span id="badge-setoran" style="background:#E53935; padding:2px 6px; border-radius:10px; font-size:12px; margin-left:auto;">0</span>
+          </button>
+          <button class="btn-primary btn-outline" onclick="navigateTo('view-admin-announcement')">
+            <span class="material-icons-round">campaign</span> Buat Pengumuman
           </button>
         </div>
       </div>
 
+      <!-- VIEW: ADMIN VERIFIKASI WARGA -->
       <div id="view-admin-verify" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Verifikasi Akun Warga</h3>
         <div id="admin-verify-list">Memuat...</div>
         <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
       </div>
 
+      <!-- VIEW: ADMIN VALIDASI SETORAN -->
       <div id="view-admin-validate" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Validasi Setoran Masuk</h3>
         <div id="admin-validate-list">Memuat...</div>
         <button class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
+      </div>
+
+      <!-- VIEW: ADMIN BUAT PENGUMUMAN -->
+      <div id="view-admin-announcement" class="glass-card page-hidden">
+        <h3 style="margin-bottom: 16px;">Buat Pengumuman</h3>
+        <div id="announce-alert" class="alert"></div>
+        <form onsubmit="event.preventDefault(); submitAnnouncement();">
+          <div class="form-group">
+            <label class="form-label">Isi Pengumuman</label>
+            <textarea id="input-announcement" class="form-input" rows="4" placeholder="Ketik pengumuman untuk warga di sini..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" id="btn-announce">Publikasikan</button>
+          <button type="button" class="btn-primary btn-secondary" onclick="navigateTo('view-admin')">Kembali</button>
+        </form>
       </div>
 
     </main>
@@ -189,11 +229,9 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // KUNCI KONFIGURASI DARI ANDA
     const firebaseConfig = {
       apiKey: "AIzaSyC-TOig0avtIPi38sdD7HKLrITm5L9A37k",
       authDomain: "qurban-rt-apps.firebaseapp.com",
@@ -203,15 +241,17 @@
       appId: "1:1044312403205:web:504471f63ce3f7ec49db6c"
     };
 
+    // KUNCI IMGBB (GANTI DENGAN API KEY ANDA DARI API.IMGBB.COM)
+    const IMGBB_API_KEY = "TARUH_API_IMGBB_DISINI";
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
-    const storage = getStorage(app);
     const TARGET_QURBAN = 3500000;
     
     let currentUserData = null;
+    let userTransactionsData = []; // Untuk generate PDF
 
-    // Utilitas SPA & UI
     window.navigateTo = (viewId) => {
       document.querySelectorAll('#app-content > div').forEach(el => el.classList.add('page-hidden'));
       document.getElementById(viewId).classList.remove('page-hidden');
@@ -223,14 +263,11 @@
     }
     const formatRp = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
 
-    // SISTEM OTENTIKASI & ROUTING ROLE
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists()) {
           currentUserData = docSnap.data();
-          
-          // CABANG ROLE: ADMIN vs USER
           if (currentUserData.role === 'admin') {
             navigateTo('view-admin');
             loadAdminDashboard();
@@ -244,28 +281,29 @@
               document.getElementById('pending-alert').classList.add('page-hidden');
               document.getElementById('active-dashboard').classList.remove('page-hidden');
               loadUserTransactions(user.uid);
+              loadAnnouncement();
             }
           }
         }
-      } else {
-        currentUserData = null; navigateTo('view-login');
-      }
+      } else { currentUserData = null; navigateTo('view-login'); }
     });
 
-    // SISTEM WARGA: Load Dasbor & Buku Tabungan
     function loadUserTransactions(uid) {
       const q = query(collection(db, "transactions"), where("uid", "==", uid));
       onSnapshot(q, (snapshot) => {
         let totalSaved = 0;
         let historyHTML = '';
+        userTransactionsData = []; 
         
-        // Sorting manual di frontend untuk mencegah error index Firebase
         let txs = [];
         snapshot.forEach(doc => txs.push({ id: doc.id, ...doc.data() }));
         txs.sort((a, b) => (b.tanggal?.toMillis() || 0) - (a.tanggal?.toMillis() || 0));
 
         txs.forEach((data) => {
-          if(data.status === 'disetujui') totalSaved += parseInt(data.nominal);
+          if(data.status === 'disetujui') {
+              totalSaved += parseInt(data.nominal);
+              userTransactionsData.push(data); // Simpan untuk PDF
+          }
           
           let dateStr = "Menunggu...";
           if(data.tanggal) {
@@ -273,37 +311,41 @@
              dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
           }
           
-          let labelStatus = data.status.replace('_', ' ');
           historyHTML += `
             <div class="history-item">
               <div>
                 <div style="font-weight:700; font-size:15px;">${formatRp(data.nominal)}</div>
                 <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
               </div>
-              <div class="status-badge badge-${data.status}">${labelStatus}</div>
-            </div>
-          `;
+              <div class="status-badge badge-${data.status}">${data.status.replace('_', ' ')}</div>
+            </div>`;
         });
 
         const percent = Math.min((totalSaved / TARGET_QURBAN) * 100, 100).toFixed(1);
         document.getElementById('total-saved').innerText = formatRp(totalSaved);
         document.getElementById('progress-bar').style.width = `${percent}%`;
         document.getElementById('progress-percent').innerText = `${percent}%`;
-        
-        if (historyHTML !== '') {
-          document.getElementById('history-list').innerHTML = historyHTML;
+        if (historyHTML !== '') document.getElementById('history-list').innerHTML = historyHTML;
+      });
+    }
+
+    function loadAnnouncement() {
+      const q = query(collection(db, "announcements"), orderBy("tanggal", "desc"), limit(1));
+      onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          const data = snapshot.docs[0].data();
+          document.getElementById('announcement-text').innerText = data.isi;
+          document.getElementById('user-announcement').classList.remove('page-hidden');
         }
       });
     }
 
-    // SISTEM ADMIN: Dasbor & Counter Realtime
     function loadAdminDashboard() {
-      // Listener Kas Global
       onSnapshot(collection(db, "transactions"), (snapshot) => {
         let kas = 0; let setoranPending = 0;
         let validHTML = '';
-        snapshot.forEach(doc => {
-          const d = doc.data();
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
           if(d.status === 'disetujui') kas += parseInt(d.nominal);
           if(d.status === 'menunggu_validasi') {
             setoranPending++;
@@ -313,8 +355,9 @@
                 <div style="color:var(--primary); font-weight:700; margin: 4px 0;">${formatRp(d.nominal)}</div>
                 <a href="${d.url_bukti}" target="_blank" style="font-size:12px; color:#1E88E5;">Lihat Bukti Foto</a>
                 <div style="margin-top:12px; display:flex; gap:8px;">
-                  <button onclick="accTx('${doc.id}')" style="flex:1; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer;">Setuju</button>
-                  <button onclick="rejTx('${doc.id}')" style="flex:1; padding:8px; background:#F44336; color:white; border:none; border-radius:8px; cursor:pointer;">Tolak</button>
+                  <!-- Tombol Setuju & Share WA -->
+                  <button onclick="accTx('${docSnap.id}', '${d.user_hp}', '${d.nama_warga}', ${d.nominal})" style="flex:1; padding:8px; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Setuju & WA</button>
+                  <button onclick="rejTx('${docSnap.id}')" style="flex:1; padding:8px; background:#F44336; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Tolak</button>
                 </div>
               </div>`;
           }
@@ -324,11 +367,10 @@
         document.getElementById('admin-validate-list').innerHTML = setoranPending > 0 ? validHTML : '<p style="text-align:center; color:#718096;">Tidak ada setoran tertunda.</p>';
       });
 
-      // Listener Verifikasi Warga
       onSnapshot(query(collection(db, "users"), where("status_aktif", "==", false)), (snapshot) => {
         let count = 0; let html = '';
-        snapshot.forEach(doc => {
-          count++; const d = doc.data();
+        snapshot.forEach(docSnap => {
+          count++; const d = docSnap.data();
           html += `
             <div class="admin-list-item">
               <div style="font-weight:700;">${d.nama}</div>
@@ -341,12 +383,112 @@
       });
     }
 
-    // Aksi Admin di Windows Global
     window.accUser = async (uid) => { await updateDoc(doc(db, "users", uid), { status_aktif: true }); alert("Akun warga aktif!"); };
-    window.accTx = async (txId) => { await updateDoc(doc(db, "transactions", txId), { status: 'disetujui' }); alert("Setoran disetujui!"); };
+    
+    // Validasi Setoran + Eksekusi Generator Teks WA
+    window.accTx = async (txId, hp, nama, nominal) => { 
+      await updateDoc(doc(db, "transactions", txId), { status: 'disetujui' }); 
+      
+      const text = `Halo Bapak/Ibu ${nama},\n\nAlhamdulillah setoran tabungan Qurban sebesar *${formatRp(nominal)}* telah kami terima dan tervalidasi.\n\nSemoga menjadi amal jariyah. Amin.\n- Panitia Qurban RT`;
+      const waUrl = `https://wa.me/${hp.replace(/^0/, '62')}?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank'); // Buka link WA di tab baru
+    };
+    
     window.rejTx = async (txId) => { await updateDoc(doc(db, "transactions", txId), { status: 'ditolak' }); alert("Setoran ditolak!"); };
 
-    // Registrasi & Login (Dengan Bug Fix dari sebelumnya)
+    window.submitAnnouncement = async () => {
+      const btn = document.getElementById('btn-announce');
+      btn.disabled = true; btn.innerText = "Memproses...";
+      try {
+        await addDoc(collection(db, "announcements"), {
+          isi: document.getElementById('input-announcement').value,
+          tanggal: serverTimestamp()
+        });
+        showAlert('success', 'Pengumuman disiarkan!', 'announce');
+        document.getElementById('input-announcement').value = '';
+      } catch(e) { showAlert('error', 'Gagal mempublikasikan', 'announce'); }
+      finally { btn.disabled = false; btn.innerText = "Publikasikan"; }
+    }
+
+    // PENGGANTIAN UPLOAD FIREBASE KE API IMGBB
+    window.handleUploadSubmit = async function() {
+      const btn = document.getElementById('btn-upload');
+      const fileInput = document.getElementById('upload-file').files[0];
+      if(!fileInput) return showAlert('error', 'Pilih foto bukti transfer', 'upload');
+      
+      btn.disabled = true; btn.innerText = "Mengunggah ke ImgBB...";
+      
+      try {
+        // 1. Upload ke ImgBB menggunakan fetch
+        const formData = new FormData();
+        formData.append("image", fileInput);
+        
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: "POST",
+            body: formData
+        });
+        const imgbbData = await response.json();
+        const imageUrl = imgbbData.data.url;
+
+        // 2. Simpan link gambar ke Firestore
+        await addDoc(collection(db, "transactions"), { 
+            uid: currentUserData.uid, 
+            nama_warga: currentUserData.nama,
+            user_hp: currentUserData.no_hp,
+            nominal: parseInt(document.getElementById('upload-amount').value), 
+            url_bukti: imageUrl, 
+            status: "menunggu_validasi", 
+            tanggal: serverTimestamp() 
+        });
+        
+        showAlert('success', 'Berhasil dikirim! Menunggu admin...', 'upload');
+        document.getElementById('form-upload').reset(); 
+        setTimeout(() => navigateTo('view-dashboard'), 2000);
+      } catch (e) { 
+        console.error(e);
+        showAlert('error', 'Gagal mengunggah bukti ke server ImgBB.', 'upload'); 
+      } finally { 
+        btn.disabled = false; btn.innerText = "Kirim Konfirmasi"; 
+      }
+    };
+
+    // FUNGSI GENERATE PDF BUKA DI TAB BARU
+    window.generatePDF = function() {
+        const { jsPDF } = window.jspdf;
+        const docPDF = new jsPDF();
+        
+        docPDF.setFont("helvetica", "bold");
+        docPDF.setFontSize(16);
+        docPDF.text("LAPORAN TABUNGAN QURBAN", 105, 20, null, null, "center");
+        
+        docPDF.setFontSize(12);
+        docPDF.setFont("helvetica", "normal");
+        docPDF.text(`Nama Warga : ${currentUserData.nama}`, 20, 40);
+        docPDF.text(`Alamat : ${currentUserData.alamat}`, 20, 48);
+        docPDF.text(`Total Disetor : ${document.getElementById('total-saved').innerText}`, 20, 56);
+        
+        docPDF.line(20, 62, 190, 62);
+        docPDF.setFont("helvetica", "bold");
+        docPDF.text("Riwayat Transaksi (Disetujui)", 20, 72);
+        
+        docPDF.setFont("helvetica", "normal");
+        let yPos = 82;
+        if(userTransactionsData.length === 0) {
+            docPDF.text("- Belum ada transaksi disetujui -", 20, yPos);
+        } else {
+            userTransactionsData.forEach((tx, index) => {
+                const tgl = tx.tanggal ? tx.tanggal.toDate().toLocaleDateString('id-ID') : '-';
+                docPDF.text(`${index + 1}. ${tgl} - ${formatRp(tx.nominal)}`, 20, yPos);
+                yPos += 8;
+            });
+        }
+        
+        // Membuka PDF di tab browser baru menggunakan Blob dan URL
+        const pdfBlob = docPDF.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+    };
+
     window.handleRegister = async function() {
       const btn = document.getElementById('btn-register');
       const phone = document.getElementById('reg-phone').value;
@@ -370,21 +512,6 @@
         await signInWithEmailAndPassword(auth, `${document.getElementById('login-phone').value}@qurban.rt`, document.getElementById('login-pass').value);
       } catch (e) { showAlert('error', 'Nomor HP atau Kata Sandi salah.', 'login'); } 
       finally { btn.disabled = false; btn.innerText = "Masuk"; }
-    };
-
-    window.handleUploadSubmit = async function() {
-      const btn = document.getElementById('btn-upload');
-      const fileInput = document.getElementById('upload-file').files[0];
-      if(!fileInput) return showAlert('error', 'Pilih foto bukti transfer', 'upload');
-      btn.disabled = true; btn.innerText = "Mengunggah...";
-      try {
-        const fileRef = ref(storage, `bukti_transfer/${currentUserData.uid}_${Date.now()}`);
-        await uploadBytes(fileRef, fileInput);
-        await addDoc(collection(db, "transactions"), { uid: currentUserData.uid, nama_warga: currentUserData.nama, nominal: parseInt(document.getElementById('upload-amount').value), url_bukti: await getDownloadURL(fileRef), status: "menunggu_validasi", tanggal: serverTimestamp() });
-        showAlert('success', 'Berhasil dikirim! Menunggu admin...', 'upload');
-        document.getElementById('form-upload').reset(); setTimeout(() => navigateTo('view-dashboard'), 2000);
-      } catch (e) { showAlert('error', 'Gagal mengunggah bukti.', 'upload'); } 
-      finally { btn.disabled = false; btn.innerText = "Kirim"; }
     };
 
     window.handleLogout = () => signOut(auth);
