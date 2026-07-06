@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tabungan Qurban v1.0.0 (dev)</title>
   
-  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#1E88E5">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +15,6 @@
   <style>
     :root {
       --primary: #1E88E5;
-      --primary-light: #E3F2FD;
       --bg-global: #F4F6F9;
       --text-main: #2D3748;
       --text-muted: #718096;
@@ -24,23 +22,10 @@
       --glass-border: rgba(255, 255, 255, 0.4);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-global); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
 
-    body {
-      background-color: var(--bg-global);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-
-    /* Container utama bergaya Android App */
+    /* Mobile First Container */
     #app-container {
       width: 100%;
       max-width: 480px;
@@ -50,54 +35,24 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
 
-    /* Header Aplikasi */
-    .app-header {
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: transparent;
-      position: relative;
-      z-index: 10;
-    }
+    /* Header & Indikator Status */
+    .app-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .app-title { font-size: 18px; font-weight: 700; }
 
-    .app-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    /* Indikator Status SYNCED (Lampu Hijau) */
     .status-container {
-      display: flex;
-      align-items: center;
-      background: var(--glass-bg);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; background: var(--glass-bg);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       border: 1px solid var(--glass-border);
-      padding: 6px 12px;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+      padding: 6px 12px; border-radius: 20px;
     }
-
-    .status-text {
-      font-size: 11px;
-      font-weight: 700;
-      color: #2E7D32;
-      letter-spacing: 0.5px;
-      margin-right: 6px;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #4CAF50;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #4CAF50;
-      animation: pulse 2s infinite;
+    .status-text { font-size: 11px; font-weight: 700; color: #2E7D32; margin-right: 6px; letter-spacing: 0.5px; }
+    
+    /* Efek Lampu Hijau */
+    .status-dot { 
+      width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; 
+      box-shadow: 0 0 8px #4CAF50; animation: pulse 2s infinite; 
     }
 
     @keyframes pulse {
@@ -106,21 +61,14 @@
       100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
     }
 
-    /* Card bergaya Glassmorphism */
-    .glass-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 24px;
-      margin: 16px;
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04);
+    /* Glassmorphism Card Component */
+    .glass-card { 
+      background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+      border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin: 16px; 
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.04); 
     }
-
-    .page-hidden {
-      display: none !important;
-    }
+    
+    .page-hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -136,8 +84,8 @@
 
     <main id="app-content">
       <div id="view-init" class="glass-card">
-        <h3 style="margin-bottom: 12px; font-weight: 600;">Sistem Basis Data</h3>
-        <p id="db-status-text" style="color: var(--text-muted); font-size: 14px;">Menghubungkan ke Firebase Firestore...</p>
+        <h3 style="margin-bottom: 12px; font-weight: 600;">Inisialisasi Sistem</h3>
+        <p id="db-status-text" style="color: var(--text-muted); font-size: 14px;">Membuka koneksi ke Firebase...</p>
       </div>
     </main>
   </div>
@@ -149,39 +97,37 @@
 
     // KUNCI KONFIGURASI: Ganti dengan objek config yang Anda dapatkan dari Firebase Console
     const firebaseConfig = {
-	apiKey: "AIzaSyC3E36aklbhBbsiInOoQgMTFrM_L5GmgE8",
-	authDomain: "tab-qurban.firebaseapp.com",
-	projectId: "tab-qurban",
-	storageBucket: "tab-qurban.firebasestorage.app",
-	messagingSenderId: "899032366116",
-	appId: "1:899032366116:web:d8dc67f4917b2d2ff02cb1"
-    };
+‎  apiKey: "AIzaSyC-TOig0avtIPi38sdD7HKLrITm5L9A37k",
+‎  authDomain: "qurban-rt-apps.firebaseapp.com",
+‎  projectId: "qurban-rt-apps",
+‎  storageBucket: "qurban-rt-apps.firebasestorage.app",
+‎  messagingSenderId: "1044312403205",
+‎  appId: "1:1044312403205:web:504471f63ce3f7ec49db6c"
+‎};
 
-    // Inisialisasi Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    // Cek Koneksi Sederhana ke Firestore
     async function checkDatabaseConnection() {
       const statusText = document.getElementById('db-status-text');
       try {
-        // Mencoba membaca koleksi 'users' untuk memastikan koneksi sukses
         await getDocs(collection(db, "users"));
-        statusText.innerHTML = "🟢 Berhasil terhubung ke Firebase Firestore. Basis data siap digunakan!";
+        statusText.innerHTML = "🟢 Berhasil terhubung ke Firebase Firestore. Lingkungan kerja siap!";
         statusText.style.color = "#2E7D32";
       } catch (error) {
         console.error("Firebase Init Error:", error);
-        statusText.innerHTML = "🔴 Gagal terhubung ke database. Periksa kembali konfigurasi firebaseConfig Anda.";
+        statusText.innerHTML = "🔴 Gagal terhubung ke database. Periksa kembali API Key dan aturan Firestore.";
         statusText.style.color = "#C62828";
+        
+        // Ubah indikator lampu menjadi merah
         document.querySelector('.status-dot').style.backgroundColor = '#E53935';
         document.querySelector('.status-dot').style.boxShadow = '0 0 8px #E53935';
-        document.getElementById('sync-status').querySelector('.status-text').innerText = 'OFFLINE';
-        document.getElementById('sync-status').querySelector('.status-text').style.color = '#C62828';
+        document.querySelector('.status-text').innerText = 'OFFLINE';
+        document.querySelector('.status-text').style.color = '#C62828';
       }
     }
 
-    // Jalankan pengecekan saat halaman dimuat
     window.addEventListener('DOMContentLoaded', checkDatabaseConnection);
   </script>
 </body>
