@@ -1,0 +1,21 @@
+{
+  "name": "Qurban Terpadu RT",
+  "short_name": "Tabungan Qurban",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F4F6F9",
+  "theme_color": "#1E88E5",
+  "description": "Aplikasi Tabungan Qurban Terpadu untuk warga.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
