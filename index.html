@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tabungan Qurban v1.0.0 (Release)</title>
+  <title>Nabung Qurban v1.0.0 (Release)</title>
   
   <meta name="theme-color" content="#1E88E5">
   <link rel="manifest" href="./manifest.json">
@@ -69,7 +69,7 @@
 
   <div id="app-container">
     <header class="app-header">
-      <div class="app-title">Qurban Terpadu</div>
+      <div class="app-title">Nabung Qurban</div>
       <div class="status-container" id="sync-status">
         <span class="status-text">SYNCED</span>
         <div class="status-dot"></div>
@@ -83,8 +83,20 @@
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Masuk untuk melihat tabungan Anda.</p>
         <div id="login-alert" class="alert"></div>
         <form id="form-login" onsubmit="event.preventDefault(); handleLogin();">
-          <div class="form-group"><label class="form-label">Nomor WhatsApp</label><input type="number" id="login-phone" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Kata Sandi</label><input type="password" id="login-pass" class="form-input" required></div>
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp</label>
+            <input type="number" id="login-phone" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label class="form-label" style="margin-bottom: 0;">Kata Sandi</label>
+              <span class="text-link" style="font-size: 12px; font-weight: 500;" onclick="hubungiAdmin()">Lupa Password?</span>
+            </div>
+            <div style="position: relative;">
+              <input type="password" id="login-pass" class="form-input" required style="padding-right: 46px;">
+              <span class="material-icons-round" id="toggle-pass" onclick="togglePassword()" style="position: absolute; right: 14px; top: 14px; color: var(--text-muted); cursor: pointer; font-size: 20px;">visibility_off</span>
+            </div>
+          </div>
           <button type="submit" class="btn-primary" id="btn-login">Masuk</button>
         </form>
         <div class="text-center"><span class="text-link" onclick="navigateTo('view-register')">Daftar Warga Baru</span></div>
@@ -224,7 +236,6 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    // Firebase Storage dihapus dari modul untuk optimasi ukuran
     import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, updateDoc, orderBy, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -255,6 +266,27 @@
       b.className = `alert alert-${type}`; b.innerText = msg; b.style.display = 'block';
     }
     const formatRp = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+
+    // FITUR TOGGLE PASSWORD
+    window.togglePassword = function() {
+      const passInput = document.getElementById('login-pass');
+      const toggleIcon = document.getElementById('toggle-pass');
+      if (passInput.type === "password") {
+        passInput.type = "text";
+        toggleIcon.innerText = "visibility";
+      } else {
+        passInput.type = "password";
+        toggleIcon.innerText = "visibility_off";
+      }
+    };
+
+    // FITUR LUPA PASSWORD (HUBUNGI ADMIN)
+    window.hubungiAdmin = function() {
+      // Masukkan nomor WhatsApp Admin Panitia yang valid di sini
+      const adminWA = "6281234567890"; 
+      const text = encodeURIComponent("Halo Admin, saya lupa kata sandi untuk akun aplikasi Nabung Qurban. Mohon bantuannya untuk melakukan reset password akun saya.");
+      window.open(`https://wa.me/${adminWA}?text=${text}`, '_blank');
+    };
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -309,7 +341,6 @@
       });
     }
 
-    // Load Pengumuman untuk Warga
     function loadAnnouncement() {
       const q = query(collection(db, "announcements"), orderBy("tanggal", "desc"), limit(1));
       onSnapshot(q, (snapshot) => {
@@ -323,7 +354,6 @@
       });
     }
 
-    // Load Daftar Pengumuman untuk Admin (Takedown Feature)
     function loadAdminAnnouncements() {
       const q = query(collection(db, "announcements"), orderBy("tanggal", "desc"));
       onSnapshot(q, (snapshot) => {
