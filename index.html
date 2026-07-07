@@ -18,17 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <style>
-    /* Tema Nuansa Islami (Emerald & Soft Green) */
-    :root { 
-      --primary: #059669; 
-      --primary-dark: #047857; 
-      --bg-global: #F0FDF4; 
-      --text-main: #1F2937; 
-      --text-muted: #6B7280; 
-      --glass-bg: rgba(255, 255, 255, 0.85); 
-      --glass-border: rgba(255, 255, 255, 0.6); 
-    }
-    
+    :root { --primary: #059669; --primary-dark: #047857; --bg-global: #F0FDF4; --text-main: #1F2937; --text-muted: #6B7280; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(255, 255, 255, 0.6); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg-global); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
     
@@ -50,7 +40,6 @@
     .form-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #D1FAE5; background: rgba(255,255,255,0.9); font-size: 14px; transition: 0.2s; }
     .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
     
-    /* Perbaikan CSS Button untuk mencegah wrap menabrak garis */
     .btn-primary { width: 100%; padding: 14px 16px; border-radius: 12px; border: none; background-color: var(--primary); color: white; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-primary:disabled { background-color: #A7F3D0; }
     .btn-secondary { background-color: #E5E7EB; color: var(--text-main); margin-top: 12px; }
@@ -86,6 +75,15 @@
     .acc-detail-row:last-child { border-bottom: none; }
     .acc-label { color: var(--text-muted); font-size: 12px; }
 
+    /* --- CSS GRID MENU ADMIN --- */
+    .admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+    .admin-grid-item { background: white; border: 1px solid #D1FAE5; border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; position: relative; cursor: pointer; box-shadow: 0 2px 8px rgba(5,150,105,0.03); transition: 0.2s; height: 100%; }
+    .admin-grid-item:active { transform: scale(0.96); }
+    .admin-grid-icon { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
+    .admin-grid-text { font-size: 11px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
+    .admin-grid-badge { position: absolute; top: -6px; right: -6px; background: #EF4444; color: white; font-size: 11px; font-weight: bold; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); border: 2px solid white; z-index: 2; }
+    .badge-green { background: #10B981; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3); }
+
     .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #E5E7EB; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; text-decoration: none; width: 25%; font-size: 10px; font-weight: 600; gap: 4px; transition: 0.2s; text-align: center;}
     .nav-item.active { color: var(--primary); }
@@ -102,7 +100,6 @@
     </header>
 
     <main id="app-content">
-      <!-- VIEW: LOGIN -->
       <div id="view-login" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Selamat Datang</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Masuk untuk melihat tabungan ibadah Anda.</p>
@@ -123,7 +120,6 @@
         <div class="text-center"><span class="text-link" onclick="navigate('view-register')">Daftar Warga Baru</span></div>
       </div>
 
-      <!-- VIEW: REGISTRASI -->
       <div id="view-register" class="glass-card page-hidden">
         <h2 style="margin-bottom: 8px; font-weight: 700;">Daftar Peserta</h2>
         <div id="register-alert" class="alert"></div>
@@ -143,7 +139,6 @@
         <div class="text-center"><span class="text-link" onclick="navigate('view-login')">Kembali ke Login</span></div>
       </div>
 
-      <!-- VIEW: DASHBOARD WARGA -->
       <div id="view-dashboard" class="page-hidden">
         <div id="pending-alert" class="glass-card page-hidden" style="border-color: #FDE68A;">
           <h3 style="color: #D97706;">Akun Sedang Ditinjau</h3>
@@ -188,7 +183,6 @@
         </div>
       </div>
 
-      <!-- VIEW: AKUN -->
       <div id="view-account" class="page-hidden">
         <div id="account-view-mode" class="glass-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -234,7 +228,6 @@
         </div>
       </div>
 
-      <!-- VIEW: UPLOAD BUKTI -->
       <div id="view-upload" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Konfirmasi Transfer</h3>
         <div id="upload-alert" class="alert"></div>
@@ -245,7 +238,6 @@
         </form>
       </div>
 
-      <!-- VIEW: DASHBOARD ADMIN -->
       <div id="view-admin" class="page-hidden">
         <div class="glass-card admin-card">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -259,40 +251,56 @@
             <div style="font-size: 12px; color: #9CA3AF;">Total Kas Global Qurban</div>
             <div style="font-size: 28px; font-weight: 700;" id="admin-total-kas">Rp 0</div>
           </div>
-          <!-- Download Button -->
           <button class="btn-primary btn-outline" style="margin-top:12px; border-color:#374151; color:white;" onclick="exportToExcel()">
-            <span class="material-icons-round">download</span> Unduh Excel Rekap Kas
+            <span class="material-icons-round">download</span> Unduh Excel Rekap
           </button>
         </div>
         
-        <div class="glass-card">
-          <!-- Tombol Analisa Keuangan Baru -->
-          <button class="btn-primary" style="margin-bottom: 12px; background:var(--primary-dark);" onclick="navigate('view-admin-analysis')">
-            <span class="material-icons-round">analytics</span> Analisa Keuangan Keseluruhan
-          </button>
-          
-          <button class="btn-primary" style="margin-bottom: 12px; justify-content:flex-start;" onclick="navigate('view-admin-members')">
-            <span class="material-icons-round">groups</span> <span style="flex:1; text-align:left;">Daftar Shohibul Qurban</span> <span id="badge-shohibul" style="background:#10B981; padding:2px 8px; border-radius:10px; font-size:12px; font-weight:bold;">0</span>
-          </button>
-          <button class="btn-primary" style="margin-bottom: 12px; justify-content:flex-start;" onclick="navigate('view-admin-verify')">
-            <span class="material-icons-round">person_add</span> <span style="flex:1; text-align:left;">Verifikasi Warga</span> <span id="badge-warga" style="background:#EF4444; padding:2px 8px; border-radius:10px; font-size:12px; font-weight:bold;">0</span>
-          </button>
-          <button class="btn-primary" style="margin-bottom: 12px; justify-content:flex-start;" onclick="navigate('view-admin-validate')">
-            <span class="material-icons-round">receipt_long</span> <span style="flex:1; text-align:left;">Validasi Setoran</span> <span id="badge-setoran" style="background:#EF4444; padding:2px 8px; border-radius:10px; font-size:12px; font-weight:bold;">0</span>
-          </button>
-          
-          <button class="btn-primary btn-outline" style="margin-bottom: 12px;" onclick="navigate('view-admin-correction')"><span class="material-icons-round">edit_document</span> Koreksi Iuran</button>
-          <button class="btn-primary btn-outline" onclick="navigate('view-admin-announcement')"><span class="material-icons-round">campaign</span> Pengumuman</button>
+        <div class="glass-card" style="padding-top: 10px;">
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--text-muted); text-align: center;">Manajemen Qurban</h3>
+          <div class="admin-grid">
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-analysis')">
+              <span class="material-icons-round admin-grid-icon">analytics</span>
+              <span class="admin-grid-text">Analisa<br>Keuangan</span>
+            </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-members')">
+              <span class="admin-grid-badge badge-green" id="badge-shohibul">0</span>
+              <span class="material-icons-round admin-grid-icon">groups</span>
+              <span class="admin-grid-text">Daftar<br>Warga</span>
+            </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-verify')">
+              <span class="admin-grid-badge" id="badge-warga">0</span>
+              <span class="material-icons-round admin-grid-icon">person_add</span>
+              <span class="admin-grid-text">Verifikasi<br>Akun</span>
+            </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-validate')">
+              <span class="admin-grid-badge" id="badge-setoran">0</span>
+              <span class="material-icons-round admin-grid-icon">receipt_long</span>
+              <span class="admin-grid-text">Validasi<br>Setoran</span>
+            </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-correction')">
+              <span class="material-icons-round admin-grid-icon">edit_document</span>
+              <span class="admin-grid-text">Koreksi<br>Iuran</span>
+            </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-announcement')">
+              <span class="material-icons-round admin-grid-icon">campaign</span>
+              <span class="admin-grid-text">Buat<br>Info</span>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <!-- ADMIN SUB-VIEWS -->
-      
-      <!-- ANALISA KEUANGAN VIEW -->
       <div id="view-admin-analysis" class="glass-card page-hidden">
         <h3 style="margin-bottom: 16px;">Analisa Keuangan</h3>
         <div class="balance-box" style="margin-bottom: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none;">
-            <div style="font-size: 12px; opacity: 0.9;">Target Total (Berdasarkan Jumlah Warga Aktif)</div>
+            <div style="font-size: 12px; opacity: 0.9;">Target Total (Sesuai Warga Aktif)</div>
             <div style="font-size: 24px; font-weight: 700;" id="analisa-target-total">Rp 0</div>
         </div>
         <div style="display: flex; gap: 12px; margin-bottom: 16px;">
@@ -367,7 +375,6 @@
         <button type="button" class="btn-primary btn-secondary" onclick="navigate('view-admin')">Kembali</button>
       </div>
 
-      <!-- INPUT DATA OFFLINE (ADMIN) -->
       <div id="view-admin-add-tx" class="glass-card page-hidden">
         <h3 style="margin-bottom: 8px;">Input Setoran (Kas Tunai)</h3>
         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Catat setoran tunai (buku fisik sudah distempel).</p>
@@ -393,7 +400,6 @@
 
     </main>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav page-hidden" id="user-bottom-nav">
       <div class="nav-item active" id="nav-dashboard" onclick="navigate('view-dashboard')"><span class="material-icons-round">home</span><span>Beranda</span></div>
       <div class="nav-item" id="nav-upload" onclick="navigate('view-upload')"><span class="material-icons-round">add_box</span><span>Setor</span></div>
@@ -540,7 +546,6 @@
     function loadAnnouncement() { onSnapshot(query(collection(db, "announcements"), orderBy("tanggal", "desc"), limit(1)), (s) => { if (!s.empty) { document.getElementById('announcement-text').innerText = s.docs[0].data().isi; document.getElementById('user-announcement').classList.remove('page-hidden'); } else document.getElementById('user-announcement').classList.add('page-hidden'); }); }
     function loadAdminAnnouncements() { onSnapshot(query(collection(db, "announcements"), orderBy("tanggal", "desc")), (s) => { let h=''; s.forEach(d => { const dt = d.data(); h += `<div class="admin-list-item" style="display:flex; justify-content:space-between; align-items:center;"><div><div style="font-size:11px; color:#6B7280;">${formatDate(dt.tanggal)}</div><div style="font-size:13px; font-weight:600; margin-top:4px;">${dt.isi}</div></div><button onclick="delAnnounce('${d.id}')" style="background:#EF4444; color:white; border:none; border-radius:6px; padding:8px 12px; font-size:11px; cursor:pointer;">Tarik</button></div>`; }); document.getElementById('admin-announce-list').innerHTML = h || '<p style="font-size:12px; color:#6B7280;">Kosong.</p>'; }); }
     
-    // Fitur Analisa Keuangan
     function updateAnalisaKeuangan() {
         const totalWarga = allActiveUsersList.length;
         const targetTotal = totalWarga * TARGET_QURBAN;
@@ -574,6 +579,9 @@
                 }
             });
             document.getElementById('badge-shohibul').innerText = activeCount;
+            // Update badge display logic if 0
+            if(activeCount > 0) { document.getElementById('badge-shohibul').style.display = 'flex'; } 
+            
             document.getElementById('admin-members-list').innerHTML = html || '<p style="text-align:center;">Belum ada warga aktif.</p>';
             document.getElementById('input-tx-user').innerHTML = selectHtml;
             updateAnalisaKeuangan();
@@ -638,11 +646,29 @@
               p++; hValid+=`<div class="admin-list-item"><div style="font-weight:700;">${d.nama_warga}</div><div style="color:var(--primary); font-weight:700; margin:4px 0;">${formatRp(d.nominal)}</div><a href="${d.url_bukti}" target="_blank" style="font-size:12px; color:#059669;">Cek Foto Bukti</a><div style="margin-top:12px; display:flex; gap:8px;"><button onclick="accTx('${d.id}','${d.user_hp}','${d.nama_warga}',${d.nominal})" style="flex:1; padding:8px; background:#10B981; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Setuju+WA</button><button onclick="rejTx('${d.id}')" style="flex:1; padding:8px; background:#EF4444; color:white; border:none; border-radius:8px; cursor:pointer; font-size:12px;">Tolak</button></div></div>`; 
           } 
         }); 
-        document.getElementById('admin-total-kas').innerText=formatRp(kas); document.getElementById('badge-setoran').innerText=p; document.getElementById('admin-validate-list').innerHTML=p>0?hValid:'<p style="text-align:center;">Kosong</p>'; 
+        document.getElementById('admin-total-kas').innerText=formatRp(kas); 
+        
+        document.getElementById('badge-setoran').innerText=p; 
+        if(p > 0) document.getElementById('badge-setoran').style.display = 'flex';
+        else document.getElementById('badge-setoran').style.display = 'none';
+        
+        document.getElementById('admin-validate-list').innerHTML=p>0?hValid:'<p style="text-align:center;">Kosong</p>'; 
         document.getElementById('admin-correction-list').innerHTML=hCorrect||'<p style="text-align:center;">Belum ada transaksi.</p>';
         updateAnalisaKeuangan();
       }); 
-      onSnapshot(query(collection(db, "users"), where("status_aktif", "==", false)), (s) => { let c=0; let h=''; s.forEach(docSnap => { c++; const d=docSnap.data(); h+=`<div class="admin-list-item"><div style="font-weight:700;">${d.nama}</div><div style="font-size:12px; color:#6B7280;">WA: ${d.no_hp} | ${d.alamat}</div><button onclick="accUser('${d.uid}')" style="width:100%; margin-top:12px; padding:8px; background:#10B981; color:white; border:none; border-radius:8px; cursor:pointer;">Aktifkan Akun</button></div>`; }); document.getElementById('badge-warga').innerText=c; document.getElementById('admin-verify-list').innerHTML=c>0?h:'<p style="text-align:center;">Kosong</p>'; }); 
+      
+      onSnapshot(query(collection(db, "users"), where("status_aktif", "==", false)), (s) => { 
+          let c=0; let h=''; 
+          s.forEach(docSnap => { 
+              c++; const d=docSnap.data(); 
+              h+=`<div class="admin-list-item"><div style="font-weight:700;">${d.nama}</div><div style="font-size:12px; color:#6B7280;">WA: ${d.no_hp} | ${d.alamat}</div><button onclick="accUser('${d.uid}')" style="width:100%; margin-top:12px; padding:8px; background:#10B981; color:white; border:none; border-radius:8px; cursor:pointer;">Aktifkan Akun</button></div>`; 
+          }); 
+          document.getElementById('badge-warga').innerText=c; 
+          if(c > 0) document.getElementById('badge-warga').style.display = 'flex';
+          else document.getElementById('badge-warga').style.display = 'none';
+          
+          document.getElementById('admin-verify-list').innerHTML=c>0?h:'<p style="text-align:center;">Kosong</p>'; 
+      }); 
     }
 
     window.adminSubmitTx = async () => {
@@ -686,13 +712,11 @@
     
     // Fitur Download Excel Per Bulan
     window.exportToExcel = function() {
-        // 1. Ambil data HANYA yang disetujui & urutkan dari tanggal terlama
         const approvedTxs = globalTxs.filter(t => t.status === 'disetujui')
                                      .sort((a, b) => (a.tanggal?.toMillis() || 0) - (b.tanggal?.toMillis() || 0));
                                      
         if(approvedTxs.length === 0) return alert("Belum ada data transaksi yang valid/sukses.");
 
-        // 2. Kelompokkan berdasarkan Bulan & Tahun
         const groupedByMonth = {};
         approvedTxs.forEach(tx => {
             const dateObj = tx.tanggal ? tx.tanggal.toDate() : new Date();
@@ -705,7 +729,6 @@
 
         const workbook = XLSX.utils.book_new();
 
-        // 3. Buat Sheet (Lembar Kerja) terpisah untuk setiap bulan
         Object.keys(groupedByMonth).forEach(monthKey => {
             const dataToExport = groupedByMonth[monthKey].map((tx, i) => ({
                 "No": i + 1,
@@ -718,7 +741,6 @@
             
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
             
-            // Lebar Kolom
             const wscols = [ {wch:5}, {wch:15}, {wch:25}, {wch:15}, {wch:15}, {wch:30} ];
             worksheet['!cols'] = wscols;
             
