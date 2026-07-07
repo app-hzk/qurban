@@ -75,14 +75,22 @@
     .acc-detail-row:last-child { border-bottom: none; }
     .acc-label { color: var(--text-muted); font-size: 12px; }
 
-    /* --- CSS GRID MENU ADMIN --- */
-    .admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
-    .admin-grid-item { background: white; border: 1px solid #D1FAE5; border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; position: relative; cursor: pointer; box-shadow: 0 2px 8px rgba(5,150,105,0.03); transition: 0.2s; height: 100%; }
+    /* --- FIX CSS GRID MENU ADMIN --- */
+    .admin-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+    .admin-grid-item { background: white; border: 1px solid #D1FAE5; border-radius: 16px; padding: 16px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; cursor: pointer; box-shadow: 0 2px 8px rgba(5,150,105,0.03); transition: 0.2s; min-height: 80px; }
     .admin-grid-item:active { transform: scale(0.96); }
-    .admin-grid-icon { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
-    .admin-grid-text { font-size: 11px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
-    .admin-grid-badge { position: absolute; top: -6px; right: -6px; background: #EF4444; color: white; font-size: 11px; font-weight: bold; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); border: 2px solid white; z-index: 2; }
+    .admin-grid-icon { font-size: 28px; color: var(--primary); margin-bottom: 8px; }
+    .admin-grid-text { font-size: 11px; font-weight: 600; color: var(--text-main); line-height: 1.3; word-wrap: break-word; width: 100%; padding: 0 2px; }
+    .admin-grid-badge { position: absolute; top: -6px; right: -6px; background: #EF4444; color: white; font-size: 10px; font-weight: bold; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); border: 2px solid white; z-index: 2; }
     .badge-green { background: #10B981; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3); }
+
+    /* --- CSS DOKUMENTASI CARD --- */
+    .doc-card { background: white; border: 1px solid #E5E7EB; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .doc-img { width: 100%; height: 200px; object-fit: cover; background: #F3F4F6; }
+    .doc-body { padding: 16px; }
+    .doc-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .doc-date { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+    .doc-desc { font-size: 13px; color: var(--text-main); line-height: 1.5; }
 
     .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #E5E7EB; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; text-decoration: none; width: 25%; font-size: 10px; font-weight: 600; gap: 4px; transition: 0.2s; text-align: center;}
@@ -168,6 +176,11 @@
               <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;"><span style="color: var(--primary);" id="progress-percent">0%</span><span style="color: var(--text-muted);">Target: Rp 3.500.000</span></div>
               <div style="font-size: 12px; color: #EF4444; font-weight: 700; margin-top: 10px;" id="outstanding-amount">Saldo Outstanding: Rp 3.500.000</div>
             </div>
+            
+            <button class="btn-primary" style="margin-bottom: 12px; background:var(--primary-dark);" onclick="navigate('view-user-dokumentasi')">
+              <span class="material-icons-round">photo_library</span> Lihat Dokumentasi Qurban
+            </button>
+            
             <div style="display: flex; gap: 8px;">
                 <button class="btn-primary" style="margin-top: 0;" onclick="navigate('view-upload')"><span class="material-icons-round" style="font-size:18px;">add_circle</span> Setor</button>
                 <button class="btn-primary btn-outline" style="margin-top: 0;" onclick="generatePDF()"><span class="material-icons-round" style="font-size:18px;">print</span> Cetak Laporan</button>
@@ -180,6 +193,15 @@
               <tbody id="history-list"><tr><td colspan="3" style="text-align:center; color:#6B7280; border:none; padding-top:20px;">Belum ada setoran.</td></tr></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <div id="view-user-dokumentasi" class="page-hidden">
+        <div class="glass-card">
+            <h3 style="margin-bottom: 8px;">Galeri Qurban</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Laporan dokumentasi penyembelihan dan penyaluran daging.</p>
+            <div id="user-doc-list">Memuat data...</div>
+            <button class="btn-primary btn-secondary" onclick="navigate('view-dashboard')">Kembali</button>
         </div>
       </div>
 
@@ -292,9 +314,31 @@
               <span class="material-icons-round admin-grid-icon">campaign</span>
               <span class="admin-grid-text">Buat<br>Info</span>
             </div>
+            
+            <div class="admin-grid-item" onclick="navigate('view-admin-dokumentasi')">
+              <span class="material-icons-round admin-grid-icon">camera_alt</span>
+              <span class="admin-grid-text">Galeri<br>Qurban</span>
+            </div>
 
           </div>
         </div>
+      </div>
+
+      <div id="view-admin-dokumentasi" class="glass-card page-hidden">
+        <h3 style="margin-bottom: 8px;">Kelola Dokumentasi Penyaluran</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Unggah foto hewan, berat, dan info penyaluran untuk warga.</p>
+        <div id="doc-alert" class="alert"></div>
+        <form onsubmit="event.preventDefault(); adminUploadDokumentasi();" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px dashed #D1FAE5;">
+          <div class="form-group"><label class="form-label">Judul (Contoh: Sapi A - Pemotongan)</label><input type="text" id="doc-title" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Deskripsi / Info Penyaluran</label><textarea id="doc-desc" class="form-input" rows="3" required></textarea></div>
+          <div class="form-group"><label class="form-label">Foto / Dokumentasi</label><input type="file" id="doc-file" class="form-input" accept="image/*" required></div>
+          <button type="submit" class="btn-primary" id="btn-doc-upload">Unggah Dokumentasi</button>
+        </form>
+        
+        <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-muted);">Riwayat Dokumentasi</h4>
+        <div id="admin-doc-list">Memuat...</div>
+        
+        <button class="btn-primary btn-secondary" onclick="navigate('view-admin')">Kembali</button>
       </div>
 
       <div id="view-admin-analysis" class="glass-card page-hidden">
@@ -427,7 +471,7 @@
 
     // ROUTER SPA
     window.navigate = (viewId) => {
-      document.querySelectorAll('#app-content > div.glass-card, #app-content > div.page-hidden, #view-dashboard, #view-admin, #view-account').forEach(el => {
+      document.querySelectorAll('#app-content > div.glass-card, #app-content > div.page-hidden, #view-dashboard, #view-admin, #view-account, #view-user-dokumentasi').forEach(el => {
           if(el.id !== viewId) el.classList.add('page-hidden');
       });
       document.getElementById(viewId).classList.remove('page-hidden');
@@ -435,10 +479,10 @@
       currentActiveView = viewId;
 
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      if (viewId === 'view-dashboard') document.getElementById('nav-dashboard')?.classList.add('active');
+      if (viewId === 'view-dashboard' || viewId === 'view-user-dokumentasi') document.getElementById('nav-dashboard')?.classList.add('active');
       if (viewId === 'view-upload') document.getElementById('nav-upload')?.classList.add('active');
       if (viewId === 'view-account') { document.getElementById('nav-account')?.classList.add('active'); document.getElementById('nav-admin-account')?.classList.add('active'); }
-      if (viewId === 'view-admin' || viewId.startsWith('view-admin-') && viewId !== 'view-admin-add-tx' && viewId !== 'view-admin-add-user' && viewId !== 'view-admin-user-detail') document.getElementById('nav-admin-home')?.classList.add('active');
+      if (viewId === 'view-admin' || viewId.startsWith('view-admin-') && viewId !== 'view-admin-add-tx' && viewId !== 'view-admin-add-user' && viewId !== 'view-admin-user-detail' && viewId !== 'view-admin-dokumentasi') document.getElementById('nav-admin-home')?.classList.add('active');
       if (viewId === 'view-admin-add-tx') document.getElementById('nav-admin-add-tx')?.classList.add('active');
       if (viewId === 'view-admin-add-user') document.getElementById('nav-admin-add-user')?.classList.add('active');
     };
@@ -508,7 +552,7 @@
               if(currentActiveView === 'view-login' || currentActiveView === 'view-register') {
                   document.getElementById('user-bottom-nav').classList.add('page-hidden'); document.getElementById('admin-bottom-nav').classList.remove('page-hidden'); navigate('view-admin'); 
               }
-              loadAdminDashboard(); loadAdminAnnouncements(); loadActiveUsers(); 
+              loadAdminDashboard(); loadAdminAnnouncements(); loadActiveUsers(); loadDokumentasi();
             } else {
               document.getElementById('admin-bottom-nav').classList.add('page-hidden'); document.getElementById('user-bottom-nav').classList.remove('page-hidden'); document.getElementById('btn-switch-admin').classList.add('page-hidden');
               if(currentActiveView === 'view-login' || currentActiveView === 'view-register') navigate('view-dashboard');
@@ -518,7 +562,7 @@
               document.getElementById('pending-alert').classList.remove('page-hidden'); document.getElementById('active-dashboard').classList.add('page-hidden');
             } else {
               document.getElementById('pending-alert').classList.add('page-hidden'); document.getElementById('active-dashboard').classList.remove('page-hidden');
-              loadUserTransactions(user.uid); loadAnnouncement();
+              loadUserTransactions(user.uid); loadAnnouncement(); loadDokumentasi();
             }
           }
         });
@@ -546,6 +590,43 @@
     function loadAnnouncement() { onSnapshot(query(collection(db, "announcements"), orderBy("tanggal", "desc"), limit(1)), (s) => { if (!s.empty) { document.getElementById('announcement-text').innerText = s.docs[0].data().isi; document.getElementById('user-announcement').classList.remove('page-hidden'); } else document.getElementById('user-announcement').classList.add('page-hidden'); }); }
     function loadAdminAnnouncements() { onSnapshot(query(collection(db, "announcements"), orderBy("tanggal", "desc")), (s) => { let h=''; s.forEach(d => { const dt = d.data(); h += `<div class="admin-list-item" style="display:flex; justify-content:space-between; align-items:center;"><div><div style="font-size:11px; color:#6B7280;">${formatDate(dt.tanggal)}</div><div style="font-size:13px; font-weight:600; margin-top:4px;">${dt.isi}</div></div><button onclick="delAnnounce('${d.id}')" style="background:#EF4444; color:white; border:none; border-radius:6px; padding:8px 12px; font-size:11px; cursor:pointer;">Tarik</button></div>`; }); document.getElementById('admin-announce-list').innerHTML = h || '<p style="font-size:12px; color:#6B7280;">Kosong.</p>'; }); }
     
+    // Fitur: Dokumentasi
+    function loadDokumentasi() { 
+        onSnapshot(query(collection(db, "dokumentasi"), orderBy("tanggal", "desc")), (s) => { 
+            let adminHtml=''; let userHtml='';
+            s.forEach(d => { 
+                const dt = d.data(); 
+                // Card untuk Warga
+                userHtml += `<div class="doc-card"><img src="${dt.url_foto}" class="doc-img" alt="Dokumentasi"><div class="doc-body"><div class="doc-title">${dt.judul}</div><div class="doc-date">${formatDate(dt.tanggal)}</div><div class="doc-desc">${dt.deskripsi}</div></div></div>`;
+                // List untuk Admin (dengan tombol Hapus)
+                adminHtml += `<div class="admin-list-item" style="display:flex; gap:12px; align-items:center;"><img src="${dt.url_foto}" style="width:60px; height:60px; object-fit:cover; border-radius:8px;"> <div style="flex:1;"><div style="font-weight:700; font-size:13px;">${dt.judul}</div><div style="font-size:11px; color:var(--text-muted);">${formatDate(dt.tanggal)}</div></div> <button onclick="delDokumentasi('${d.id}')" style="background:#EF4444; color:white; border:none; border-radius:6px; padding:8px; cursor:pointer;"><span class="material-icons-round" style="font-size:16px;">delete</span></button></div>`;
+            }); 
+            document.getElementById('user-doc-list').innerHTML = userHtml || '<p style="font-size:13px; color:#6B7280; text-align:center; padding: 20px 0;">Belum ada dokumentasi.</p>';
+            document.getElementById('admin-doc-list').innerHTML = adminHtml || '<p style="font-size:12px; color:#6B7280;">Belum ada foto.</p>';
+        }); 
+    }
+
+    window.adminUploadDokumentasi = async function() { 
+        const btn = document.getElementById('btn-doc-upload'); 
+        const title = document.getElementById('doc-title').value;
+        const desc = document.getElementById('doc-desc').value;
+        const fileInput = document.getElementById('doc-file').files[0]; 
+        
+        if(!fileInput) return showAlert('error', 'Pilih foto terlebih dahulu', 'doc'); 
+        btn.disabled=true; btn.innerText="Mengunggah Foto..."; 
+        try{ 
+            const formData = new FormData(); formData.append("image", fileInput); 
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }); 
+            const dat = await res.json(); 
+            
+            await addDoc(collection(db, "dokumentasi"), { judul: title, deskripsi: desc, url_foto: dat.data.url, tanggal: serverTimestamp() }); 
+            showAlert('success', 'Dokumentasi berhasil dipublikasikan!', 'doc'); 
+            document.getElementById('doc-title').value = ''; document.getElementById('doc-desc').value = ''; document.getElementById('doc-file').value = '';
+        }catch(e){ showAlert('error', 'Gagal mengunggah dokumentasi', 'doc'); }finally{ btn.disabled=false; btn.innerText="Unggah Dokumentasi"; } 
+    };
+    
+    window.delDokumentasi = async (id) => { if(confirm('Hapus dokumentasi ini dari galeri warga?')) await deleteDoc(doc(db, "dokumentasi", id)); };
+
     function updateAnalisaKeuangan() {
         const totalWarga = allActiveUsersList.length;
         const targetTotal = totalWarga * TARGET_QURBAN;
@@ -579,7 +660,6 @@
                 }
             });
             document.getElementById('badge-shohibul').innerText = activeCount;
-            // Update badge display logic if 0
             if(activeCount > 0) { document.getElementById('badge-shohibul').style.display = 'flex'; } 
             
             document.getElementById('admin-members-list').innerHTML = html || '<p style="text-align:center;">Belum ada warga aktif.</p>';
@@ -710,7 +790,6 @@
 
     window.handleUploadSubmit = async function() { const btn = document.getElementById('btn-upload'); const fileInput = document.getElementById('upload-file').files[0]; if(!fileInput) return showAlert('error', 'Pilih foto', 'upload'); btn.disabled=true; btn.innerText="Mengunggah..."; try{ const formData = new FormData(); formData.append("image", fileInput); const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData }); const dat = await res.json(); await addDoc(collection(db, "transactions"), { uid: currentUserData.uid, nama_warga: currentUserData.nama, user_hp: currentUserData.no_hp, nominal: parseInt(document.getElementById('upload-amount').value), url_bukti: dat.data.url, status: "menunggu_validasi", tanggal: serverTimestamp() }); showAlert('success', 'Terkirim!', 'upload'); document.getElementById('form-upload').reset(); setTimeout(()=>navigate('view-dashboard'), 2000); }catch(e){ showAlert('error', 'Gagal', 'upload'); }finally{ btn.disabled=false; btn.innerText="Kirim Konfirmasi"; } };
     
-    // Fitur Download Excel Per Bulan
     window.exportToExcel = function() {
         const approvedTxs = globalTxs.filter(t => t.status === 'disetujui')
                                      .sort((a, b) => (a.tanggal?.toMillis() || 0) - (b.tanggal?.toMillis() || 0));
@@ -721,7 +800,7 @@
         approvedTxs.forEach(tx => {
             const dateObj = tx.tanggal ? tx.tanggal.toDate() : new Date();
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
-            const monthYear = `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`; // Contoh: Jul 2026
+            const monthYear = `${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
             
             if(!groupedByMonth[monthYear]) groupedByMonth[monthYear] = [];
             groupedByMonth[monthYear].push(tx);
@@ -740,7 +819,6 @@
             }));
             
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            
             const wscols = [ {wch:5}, {wch:15}, {wch:25}, {wch:15}, {wch:15}, {wch:30} ];
             worksheet['!cols'] = wscols;
             
